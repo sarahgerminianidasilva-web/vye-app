@@ -83,7 +83,7 @@ function lessonsHTML(){
   return'<details class="lesson lx" data-les="'+esc(l.id)+'"'+(op?' open':'')+'><summary>'+head+'<span class="chev" aria-hidden="true"></span></summary><div class="lb">'+
    (l.sum?'<p class="lsum">'+esc(l.sum)+'</p>':'')+
    (V?'<h3>Vocabulário <small>'+(canSay?'toque 🔊 para ouvir':'com pronúncia')+'</small></h3><ul class="voc">'+V+'</ul>':'')+
-   (S?'<h3>Frases da aula</h3><ul class="say-l">'+S+'</ul>':'')+
+   (S?'<h3>Frases da aula</h3><ul class="say-l">'+S+'</ul>':'')+revHTML(l)+
    (L?'<div class="lls">'+L+'</div>':'')+xBtn("lessons",l.id)+'</div></details>'}).join(""):'<div class="empty">As aulas aparecem aqui conforme forem registradas.</div>';
  var add=editing?'<form class="add" data-add="lessons"><input type="date" name="date" id="a-ldate" required aria-label="Data"><input name="title" id="a-ltitle" placeholder="Tema da aula" required><input class="wide" name="note" id="a-lnote" placeholder="O que vimos (opcional)"><button class="btn primary" type="submit">Registrar aula</button></form>':'';
  return'<section aria-labelledby="h-les"><h2 id="h-les">Últimas aulas</h2><p class="note-sm" style="margin:-4px 0 10px">Toque numa aula para ver o vocabulário, a pronúncia e o resumo.</p><div class="panel">'+body+'</div>'+add+'</section>';
@@ -221,6 +221,18 @@ function exHTML(h){var E=h.ex||[],st=hwSt(h),n=E.length;
  if(r)body+='<p class="fb '+(r.ok?"ok":"no")+'">'+(r.ok?"Isso! ":"Quase. ")+esc(q.e||"")+(!r.ok&&q.ans?'<br>Resposta: <b>'+esc(q.ans[0])+'</b>':'')+'</p><button type="button" class="btn small primary ex-next" data-exnext="'+esc(h.id)+'">'+(st.i+1<n?"Próxima →":"Ver minha nota")+'</button>';
  return bar+body}
 function exFind(id){return(D.homework||[]).filter(function(x){return x.id===id})[0]}
+function alertMsg(t){var el=document.getElementById("vye-msg");if(!el){el=document.createElement("div");el.id="vye-msg";el.setAttribute("role","status");el.style.cssText="position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:70;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.92rem;max-width:calc(100% - 32px)";document.body.appendChild(el)}el.textContent=t;el.hidden=false;clearTimeout(alertMsg._t);alertMsg._t=setTimeout(function(){el.hidden=true},3500)}
+var revAns={};
+function revHTML(l){var R=l.rev||[];if(!R.length)return"";var ok=0,n=0;
+ var items=R.map(function(q,i){var k=l.id+"|"+i,ch=revAns[k],ans=ch!==undefined;if(ans){n++;if(ch===q.a)ok++}
+  return'<div class="rv-it"><p>'+(i+1)+'. '+esc(q.q)+'</p><div class="qo">'+q.o.map(function(o,j){var c=ans?(j===q.a?" right":(j===ch?" wrong":"")):"";return'<button type="button" class="qb'+c+'" data-rvq="'+esc(k)+'" data-o="'+j+'"'+(ans?' disabled':'')+'>'+esc(o)+'</button>'}).join("")+'</div>'+(ans?'<p class="fb '+(ch===q.a?"ok":"no")+'">'+(ch===q.a?"Isso! ":"Quase. ")+esc(q.e||"")+'</p>':'')+'</div>'}).join("");
+ return'<div class="rvbox"><h3>Revisão da aula <small>'+(n===R.length?ok+' de '+R.length+' ✓':'teste rápido')+'</small></h3>'+items+'</div>'}
+var xTxt={},xRes={};
+function extraHTML(h){var x=h.extra;if(!x)return"";var d=!!done[h.id+"-extra"],r=xRes[h.id];
+ return'<div class="xbox"><b>✍️ '+esc(x.title||"Extra de escrita")+'</b>'+(x.task?'<p>'+esc(x.task)+'</p>':'')+
+ (x.url?'<a class="hwbtn" href="'+esc(safeUrl(x.url))+'" target="_blank" rel="noopener">'+esc(x.label||"Exercício online ↗")+'</a>':'')+
+ (x.task?'<textarea id="xw-'+esc(h.id)+'" data-xin="'+esc(h.id)+'" rows="4" spellcheck="false" placeholder="Escreva aqui em inglês…">'+esc(xTxt[h.id]||"")+'</textarea><div class="wrow"><button type="button" class="btn small primary" data-xchk="'+esc(h.id)+'">Corrigir</button><button type="button" class="btn small" data-xai="'+esc(h.id)+'">Copiar para a IA</button>'+(D.doneForm?(d?'<span class="note-sm">Enviado ✓</span>':'<button type="button" class="btn small" data-xsend="'+esc(h.id)+'">Enviar para a teacher</button>'):'')+'</div>'+
+  (r?'<ul class="fl">'+r.map(function(y){return'<li class="'+(y.ok?"ok":"no")+'">'+esc(y.t)+'</li>'}).join("")+(r.every(function(y){return y.ok})?'<li class="ok">Nenhum erro comum encontrado. Agora é só enviar!</li>':'')+'</ul>':''):'')+'</div>'}
 function hwHTML(){
  var H=(D.homework||[]).slice().sort(function(a,b){return(a.sent||"")<(b.sent||"")?1:-1});
  var body=H.length?H.map(function(h,i){var d=!!done[h.id],links="";
@@ -229,23 +241,24 @@ function hwHTML(){
   if(h.ex&&h.ex.length){var st0=hwSt(h);links='<button type="button" class="hwbtn" data-exopen="'+esc(h.id)+'" aria-expanded="'+(hwOpen[h.id]?"true":"false")+'">'+(hwOpen[h.id]?"Fechar":st0.i>=h.ex.length?"Ver minha nota":st0.i>0?"Continuar ✎":"Fazer aqui ✎")+'</button>'+links}
   if(D.doneForm&&!d&&!(h.ex&&h.ex.length))links+='<a class="hwbtn hwdone" href="'+esc(D.doneForm+"?aluno="+encodeURIComponent((D.student&&D.student.name)||"")+"&licao="+encodeURIComponent(h.title)+"&codigo="+encodeURIComponent(h.id))+'" target="_blank" rel="noopener" data-hwdone="'+esc(h.id)+'">Terminei esta lição ✓</a>';
   return'<div class="hw'+(d?' done':'')+'"><input type="checkbox" id="hw-'+esc(h.id)+'" data-task="'+esc(h.id)+'"'+(d?' checked':'')+' aria-label="Marcar como feita"><div class="hwb"><div class="hwt">'+esc(h.title)+(i===0&&!d?'<span class="tagnow">nova</span>':'')+'</div>'+
-  '<small>'+(h.sent?'Enviada em '+esc(br(h.sent)):'')+(h.due?' · entregar até '+esc(br(h.due)):'')+'</small>'+(h.note?'<p>'+esc(h.note)+'</p>':'')+'<div class="hwl">'+links+'</div>'+(h.ex&&hwOpen[h.id]?'<div class="ex" id="ex-'+esc(h.id)+'">'+exHTML(h)+'</div>':'')+'</div>'+xBtn("homework",h.id)+'</div>'}).join(""):'<div class="empty">Quando a teacher enviar uma lição de casa, ela aparece aqui.</div>';
+  '<small>'+(h.sent?'Enviada em '+esc(br(h.sent)):'')+(h.due?' · entregar até '+esc(br(h.due)):'')+'</small>'+(h.note?'<p>'+esc(h.note)+'</p>':'')+'<div class="hwl">'+links+'</div>'+extraHTML(h)+(h.ex&&hwOpen[h.id]?'<div class="ex" id="ex-'+esc(h.id)+'">'+exHTML(h)+'</div>':'')+'</div>'+xBtn("homework",h.id)+'</div>'}).join(""):'<div class="empty">Quando a teacher enviar uma lição de casa, ela aparece aqui.</div>';
  var add=editing?'<form class="add" id="hwf"><input id="hw-title" placeholder="Nome da lição (ex.: Present simple – exercícios)" class="wide" required><label class="note-sm" style="display:flex;flex-direction:column;gap:4px">Entregar até<input type="date" id="hw-due"></label><input id="hw-url" placeholder="Link (Drive, Wordwall, Liveworksheets...)"><label class="note-sm wide" style="display:flex;flex-direction:column;gap:4px">Ou anexe um arquivo (PDF ou imagem)<input type="file" id="hw-file" accept="application/pdf,image/*"></label><input class="wide" id="hw-note" placeholder="Instruções (opcional)"><button class="btn primary" type="submit">Anexar lição</button><span class="status" id="hw-status"></span></form>':'';
  return'<section aria-labelledby="h-hw"><h2 id="h-hw">Lição de casa'+(H.length?'<span class="count">'+H.filter(function(h){return done[h.id]}).length+' de '+H.length+' feitas</span>':'')+'</h2><div class="panel">'+body+'</div>'+add+'</section>';
 }
 var vidTab="aula",qAns={},wVal={},wRes={},wShow={},freeTxt="",freeRes=null,copied="";
 function normA(x){return String(x||"").toLowerCase().replace(/[’`´]/g,"'").replace(/\bdo not\b/g,"don't").replace(/\bdoes not\b/g,"doesn't").replace(/[^a-z' ]/g," ").replace(/'/g,"").replace(/\s+/g," ").trim()}
 function wCheck(w){var v=normA(wVal[w.id]);return(w.ans||[]).some(function(a){return normA(a)===v})}
-function freeCheck(t){var out=[],ss=t.split(/[.!?\n]+/).map(function(x){return x.trim()}).filter(Boolean),low=" "+t.toLowerCase().replace(/[’`´]/g,"'")+" ";
+function freeCheck(t,o){o=o||{min:4,neg:2};var out=[],ss=t.split(/[.!?\n]+/).map(function(x){return x.trim()}).filter(Boolean),low=(" "+t.toLowerCase().replace(/[’`´]/g,"'")+" ").replace(/\bdoesnt\b/g,"doesn't").replace(/\bdont\b/g,"don't");
  var neg=(low.match(/\b(don't|doesn't|do not|does not)\b/g)||[]).length;
- out.push(ss.length>=4?{ok:1,t:"Você escreveu "+ss.length+" frases."}:{ok:0,t:"Escreva pelo menos 4 frases (agora tem "+ss.length+")."});
- out.push(neg>=2?{ok:1,t:"Usou a negativa "+neg+" vezes."}:{ok:0,t:"Use don't / doesn't em pelo menos 2 frases."});
+ out.push(ss.length>=o.min?{ok:1,t:"Você escreveu "+ss.length+" frases."}:{ok:0,t:"Escreva pelo menos "+o.min+" frases (agora tem "+ss.length+")."});
+ if(o.neg)out.push(neg>=o.neg?{ok:1,t:"Usou a negativa "+neg+" vezes."}:{ok:0,t:"Use don't / doesn't em pelo menos "+o.neg+" frases."});
  var e1=low.match(/\b(doesn't|does not)\s+(\w+s)\b/g);if(e1)e1.forEach(function(x){if(!/\b(is|was|has|does)$/.test(x))out.push({ok:0,t:"“"+x+"”: depois de doesn't o verbo fica sem -s."})});
  var e2=low.match(/\b(he|she|it|my \w+)\s+(don't|do not)\b/g);if(e2)e2.forEach(function(x){out.push({ok:0,t:"“"+x+"”: com he / she / it use doesn't."})});
  var e3=low.match(/\b(i|you|we|they)\s+(doesn't|does not)\b/g);if(e3)e3.forEach(function(x){out.push({ok:0,t:"“"+x+"”: com I / you / we / they use don't."})});
  var e4=low.match(/\b(i|you|we|they)\s+(eats|drinks|sleeps|plays|goes|does|exercises|walks|runs|works)\b/g);if(e4)e4.forEach(function(x){out.push({ok:0,t:"“"+x+"”: com I / you / we / they o verbo fica sem -s."})});
  var e5=low.match(/\b(i|you|we|they|he|she)\s+(not)\s+\w+/g);if(e5)e5.forEach(function(x){out.push({ok:0,t:"“"+x+"”: para negar, use don't / doesn't antes do verbo."})});
  var e6=low.match(/\b(i|he|she|we|they|you)\s+(eat|drink|sleep|go|play|do|exercise|eats|drinks|sleeps|goes|plays|exercises)\s+(always|never|usually|sometimes|often)\b/g);if(e6)e6.forEach(function(x){out.push({ok:0,t:"“"+x+"”: a palavra de frequência vem antes do verbo."})});
+ var e7=low.match(/\b(he|she|it)\s+(always\s+|usually\s+|often\s+|sometimes\s+|never\s+)?(go|do|have|eat|drink|work|play|watch|study|sleep|like|live|wake|cook|read|walk|listen|need|want)\b/g);if(e7)e7.forEach(function(x){out.push({ok:0,t:"“"+x+"”: com he / she / it o verbo ganha -s (goes, has, works…)."})});
  if(!/^[A-Z]/.test(t.trim()))out.push({ok:0,t:"Comece a frase com letra maiúscula."});
  return out}
 function quizHTML(){var Q=D.quiz||[];if(!Q.length)return'<div class="empty">Os exercícios do tema aparecem aqui.</div>';
@@ -364,7 +377,7 @@ app.addEventListener("change",function(e){
  var map={"e-name":["student","name"],"e-level":["student","level"],"e-time":["student","time"],"e-meet":["student","meet"],"e-mat":["links","materials"],"e-rec":["links","recordings"],"e-nb":["links","notebook"]};
  if(map[t.id]){var k=map[t.id];D[k[0]]=D[k[0]]||{};D[k[0]][k[1]]=t.value.trim();mark();render()}
 });
-app.addEventListener("input",function(e){var t=e.target;if(t.dataset.win)wVal[t.dataset.win]=t.value;if(t.id==="w-free")freeTxt=t.value});
+app.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.xin)xTxt[t.dataset.xin]=t.value;if(t.dataset.win)wVal[t.dataset.win]=t.value;if(t.id==="w-free")freeTxt=t.value});
 app.addEventListener("keydown",function(e){var t=e.target;if(e.key==="Enter"&&t.dataset&&t.dataset.exin){e.preventDefault();var be=document.querySelector('[data-excheck="'+t.dataset.exin+'"]');if(be)be.click();return}if(e.key==="Enter"&&t.dataset&&t.dataset.win){e.preventDefault();var bb=document.querySelector('[data-wchk="'+t.dataset.win+'"]');if(bb)bb.click()}});
 app.addEventListener("submit",function(e){
  if(e.target.id==="hwf"){e.preventDefault();
@@ -415,6 +428,11 @@ app.addEventListener("click",function(e){
  if(b.dataset.cdgo!==undefined){cdStep=Math.max(0,+b.dataset.cdgo);render();return}
  if(b.dataset.cd){cdSt[b.dataset.cd]=+b.dataset.v;cdSave();render();return}
  if(b.dataset.reppub){(D.reports||[]).forEach(function(r){if(r.id===b.dataset.reppub)r.published=!r.published});mark();render();return}
+ if(b.dataset.rvq){var pr=b.dataset.rvq.split("|"),L0=(D.lessons||[]).filter(function(x){return x.id===pr[0]})[0];revAns[b.dataset.rvq]=+b.dataset.o;render();return}
+ if(b.dataset.xchk){var xh=(D.homework||[]).filter(function(x){return x.id===b.dataset.xchk})[0],xe=document.getElementById("xw-"+b.dataset.xchk);xTxt[b.dataset.xchk]=xe?xe.value:"";xRes[b.dataset.xchk]=xTxt[b.dataset.xchk].trim()?freeCheck(xTxt[b.dataset.xchk],{min:(xh&&xh.extra&&xh.extra.min)||3,neg:(xh&&xh.extra&&xh.extra.neg)||0}):[{ok:0,t:"Escreva suas frases primeiro."}];render();return}
+ if(b.dataset.xai){var xe2=document.getElementById("xw-"+b.dataset.xai),tx=xe2?xe2.value:"";xTxt[b.dataset.xai]=tx;var base2=(D.prompts||[]).filter(function(x){return x.id==="ai3"})[0];var full=(base2?base2.p:"Corrija meu texto em inglês (nível A1) e explique os erros em português:\n\n")+tx;try{navigator.clipboard.writeText(full).then(function(){alertMsg("Copiado! Cole no Claude ou no ChatGPT.")},function(){prompt("Copie o texto:",full)})}catch(err){}return}
+ if(b.dataset.xsend){var hid=b.dataset.xsend,xh2=(D.homework||[]).filter(function(x){return x.id===hid})[0],xe3=document.getElementById("xw-"+hid),tx2=(xe3?xe3.value:"").trim();if(!tx2){alertMsg("Escreva suas frases antes de enviar.");return}xTxt[hid]=tx2;
+  var a=document.createElement("a");a.href=D.doneForm+"?aluno="+encodeURIComponent((D.student&&D.student.name)||"")+"&licao="+encodeURIComponent("Extra de escrita · "+(xh2?xh2.title:""))+"&codigo="+encodeURIComponent(hid+"-extra")+"&texto="+encodeURIComponent(tx2.slice(0,1500));a.target="_blank";a.rel="noopener";a.setAttribute("data-hwdone",hid+"-extra");a.hidden=true;document.getElementById("app").appendChild(a);a.click();a.remove();return}
  if(b.dataset.exopen){hwOpen[b.dataset.exopen]=!hwOpen[b.dataset.exopen];render();return}
  if(b.dataset.exmc){var H1=exFind(b.dataset.exmc),S1=hwSt(H1),Q1=H1.ex[S1.i];S1.r[S1.i]={v:+b.dataset.o,ok:+b.dataset.o===Q1.a};hwSave();render();return}
  if(b.dataset.expick){var pk=hwPick[b.dataset.expick]||[];pk.push(+b.dataset.j);hwPick[b.dataset.expick]=pk;render();return}
@@ -454,7 +472,7 @@ app.addEventListener("click",function(e){
   });
  }
 });
-ctx.every(function(){var ae=document.activeElement;if(!editing&&!(ae&&ae.closest&&ae.closest(".study,.ex")))render()},60000);
+ctx.every(function(){var ae=document.activeElement;if(!editing&&!(ae&&ae.closest&&ae.closest(".study,.ex,.xbox")))render()},60000);
 
 ctx.api={render:function(){render()},
  markPay:function(ym){paySent[ym]=1;try{LS.setItem("cl-paysent",JSON.stringify(paySent))}catch(e){}render()},

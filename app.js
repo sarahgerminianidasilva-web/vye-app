@@ -216,7 +216,7 @@
     return sb.from("submissions").insert({ student_id: current.student.id, kind: kind, ref: ref || null, payload: payload || {}, file_path: file_path || null }).then(function (r) { if (r.error) throw r.error; });
   }
   function hwSubmit(p, id) {
-    submit("homework", id || p.codigo, { licao: p.licao, codigo: p.codigo }).then(function () {
+    submit("homework", id || p.codigo, { licao: p.licao, codigo: p.codigo, texto: p.texto || "" }).then(function () {
       if (current.api && id) current.api.markDone(id);
       toast("Pronto! A teacher já recebeu ✓");
     }).catch(function () { toast("Não deu para enviar. Confira a internet e tente de novo."); });
@@ -311,6 +311,7 @@
           acts += paid ? '<span class="pill-s ok" style="align-self:center">' + esc((p.mes || monLabel(x.ref)).split(" ")[0]) + ' pago ✓</span>' : '<button class="tb-btn primary" data-markpaid="' + x.id + '">Marcar ' + esc((p.mes || monLabel(x.ref)).split(" ")[0]) + ' como pago</button>'; }
         if (x.kind === "selfeval") body = esc(p.semestre || "") + ' · <b>' + esc(p.resultado || "") + '</b>';
         if (p.recado) body += '<br><i>“' + esc(p.recado) + '”</i>';
+        if (p.texto) body += '<div class="ev-txt">' + esc(p.texto).replace(/\n/g, "<br>") + '</div>';
         if (!x.seen) acts += '<button class="tb-btn" data-seen="' + x.id + '">✓ Visto</button>';
         acts += '<a class="tb-btn" href="#/aluno/' + x.student_id + '">Abrir painel</a>';
         return '<div class="ev' + (x.seen ? "" : " new") + '"><div class="ev-h"><b>' + esc((x.students && x.students.name) || "Aluno") + '</b><small>' + fmtDT(x.created_at) + '</small></div><span class="kind">' + esc(KIND[x.kind] || x.kind) + '</span><p>' + body + '</p><div class="ev-acts">' + acts + '</div></div>';

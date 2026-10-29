@@ -200,6 +200,13 @@ section h2 .count{font-family:var(--body);font-size:.85rem;color:var(--muted);fo
 .ex-end small{color:var(--ok);font-weight:700}
 .tagauto{margin-left:6px;font-size:.7rem;font-weight:600;color:var(--muted);vertical-align:middle}
 button.hwbtn{font:inherit;font-size:.85rem;font-weight:700;border:0;cursor:pointer}
+.rvbox{margin-top:6px;padding:10px 12px;border-radius:12px;border:1px dashed var(--line);display:flex;flex-direction:column;gap:6px}
+.rvbox h3{margin:0}
+.rv-it p{margin:0 0 4px;font-size:.9rem;font-weight:600}
+.xbox{margin-top:10px;padding:12px;border-radius:12px;background:color-mix(in srgb,var(--warm) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--warm) 30%,transparent);display:flex;flex-direction:column;gap:8px}
+.xbox p{margin:0;font-size:.9rem}
+.xbox .hwbtn{align-self:flex-start}
+.xbox textarea{width:100%;box-sizing:border-box;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
 .lx{display:block}
 .lx>summary{list-style:none;display:flex;gap:12px;align-items:flex-start;cursor:pointer}
 .lx>summary::-webkit-details-marker{display:none}

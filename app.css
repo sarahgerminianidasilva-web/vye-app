@@ -81,3 +81,4 @@ body{min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-botto
 
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.92rem;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
 @media (max-width:560px){.st-card{flex-wrap:wrap}.st-acts{width:100%;justify-content:flex-start;padding-left:52px}}
+.ev-txt{margin-top:6px;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--warm) 10%,var(--surface));font-size:.9rem;white-space:normal}
