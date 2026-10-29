@@ -1,0 +1,354 @@
+{
+ "challenges": [
+  {
+   "id": "c0",
+   "text": "Assista 5 minutos de um vídeo da aba Listening."
+  },
+  {
+   "id": "c1",
+   "text": "Leia em voz alta 5 frases dos slides da Lesson 13."
+  },
+  {
+   "id": "c2",
+   "text": "Escreva 3 frases sobre a rotina de alguém usando he ou she."
+  },
+  {
+   "id": "c3",
+   "text": "Ouça uma música em inglês e anote 3 palavras novas."
+  },
+  {
+   "id": "c4",
+   "text": "Fale por 1 minuto sobre o seu dia em inglês. Pode gravar no celular."
+  },
+  {
+   "id": "c5",
+   "text": "Repita em voz alta, 3 vezes cada, as frases que você já sabe."
+  },
+  {
+   "id": "c6",
+   "text": "Faça 5 minutos da lição de casa ou refaça uma atividade."
+  }
+ ],
+ "prompts": [
+  {
+   "id": "ai1",
+   "title": "Conversa sobre hábitos saudáveis",
+   "p": "Você é meu professor de inglês. Meu nível é A1 (iniciante). Converse comigo em inglês sobre hábitos saudáveis (comida, exercício, sono). Use frases curtas e simples, faça UMA pergunta por vez e espere minha resposta. Se eu errar, mostre a frase corrigida e explique em português em uma linha, principalmente erros com don't / doesn't."
+  },
+  {
+   "id": "ai2",
+   "title": "Treino de don't / doesn't",
+   "p": "Crie 10 frases afirmativas simples (nível A1) sobre rotina e saúde para eu passar para a negativa com don't ou doesn't. Mostre uma frase por vez, espere minha resposta e me corrija antes de passar para a próxima. No final, me dê minha pontuação."
+  },
+  {
+   "id": "ai3",
+   "title": "Corrija meu texto",
+   "p": "Sou aluno de inglês nível A1. Corrija o texto abaixo. Mostre primeiro o texto corrigido, depois liste cada erro com uma explicação curta em português. Não mude o que eu quis dizer.\n\nMeu texto:\n"
+  },
+  {
+   "id": "ai4",
+   "title": "Role-play: consulta com nutricionista",
+   "p": "Vamos fazer um role-play em inglês nível A1. Você é um nutricionista e eu sou o paciente. Pergunte sobre o que eu como, bebo e quanto eu durmo. Uma pergunta por vez, frases curtas. No final, me dê 3 dicas em inglês fácil e corrija meus erros em português."
+  },
+  {
+   "id": "ai5",
+   "title": "Collocations: play, do, go, eat, drink",
+   "p": "Me ensine 10 collocations com play, do, go, eat e drink sobre estilo de vida saudável (nível A1). Para cada uma, dê um exemplo curto e a tradução. Depois faça um quiz de 5 perguntas comigo, uma por vez."
+  }
+ ],
+ "doneForm": "https://tally.so/r/BEErLK",
+ "payForm": "https://tally.so/r/5XXJEE",
+ "selfForm": "https://tally.so/r/X55pvd",
+ "semester": {
+  "id": "2026-2",
+  "label": "2º semestre de 2026"
+ },
+ "banner": "assets/banner.jpg",
+ "units": [
+  {
+   "id": "u1",
+   "title": "What's your name?",
+   "note": "Cumprimentos, alfabeto e soletrar",
+   "url": "https://docs.google.com/presentation/d/1v3FHqSA79d0ZoT_dEGzd3DqZKm0_erLUSFtspose8JY/edit",
+   "status": "now"
+  },
+  {
+   "id": "u2",
+   "title": "They're my friends",
+   "note": "Verb to be: afirmativa",
+   "url": "https://docs.google.com/presentation/d/1ncZi_vsm575QSmpXvD5q8Pim7RYUbm8lfElkbfmjV5w/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u3",
+   "title": "My bag isn't brown",
+   "note": "Verb to be: negativa",
+   "url": "https://docs.google.com/presentation/d/1AFd3NNkzZjz0D7iUuPs4flEy-pTaEJwWuHS1q7jPnNQ/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u4",
+   "title": "Are you American?",
+   "note": "Verb to be: perguntas e nacionalidades",
+   "url": "https://docs.google.com/presentation/d/1ISx-bA1J5QJ4WlXMtMPX2nhXldEll1nyF40JNXcYGw4/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u5",
+   "title": "It's his friend's house",
+   "note": "Possessivos: my, your, his, her, our, their",
+   "url": "https://docs.google.com/presentation/d/15uscSXA5Yr-buGT747efAU6jX6Yn_CfKp3a2sTeBlrg/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u6",
+   "title": "I've got eleven cups!",
+   "note": "Have got, números e objetos",
+   "url": "https://docs.google.com/presentation/d/1VmIlti2xDZrowxZF5ZIcIIFuip9X4jnyxXMWr97WzCM/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u7",
+   "title": "Welcome to my workspace!",
+   "note": "There is / there are e preposições de lugar",
+   "url": "https://docs.google.com/presentation/d/1rtp0v_YX3Fwc0d34VDOZEWJMmjcWdrFr8CtkyIQqumI/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u8",
+   "title": "What's the weather like?",
+   "note": "Clima, estações e artigos a / an",
+   "url": "https://docs.google.com/presentation/d/1vLdHO8yk6rLUoP2F34JOdZqcX6eJucs_y4_OxP1Up-Q/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u9",
+   "title": "Dress or jeans",
+   "note": "Roupas e compras",
+   "url": "https://docs.google.com/presentation/d/1jxDu0L-1SAmQA5teECk_G0IlSICXsiEyvjgAozwUinU/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u10",
+   "title": "Parts of the body",
+   "note": "Partes do corpo e plurais irregulares",
+   "url": "https://docs.google.com/presentation/d/1ye1BpVlIJA2NRb8dkunJBVBbpUCqhJOtXWeZQokSt7g/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u11",
+   "title": "My morning routine",
+   "note": "Rotina e advérbios de frequência",
+   "url": "https://docs.google.com/presentation/d/1IQQ8fG_VV0qjIjlr8ix_5zrqMDKxQgeb29hiARPjntg/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u12",
+   "title": "A day in the life",
+   "note": "Present simple: he works, she goes",
+   "url": "https://docs.google.com/presentation/d/1KyG-LQBMWQVg4UnNPhPHJxIKN9aviIviRrR9pN02LFo/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u13",
+   "title": "Healthy lifestyle",
+   "note": "Present simple: negativa",
+   "url": "https://docs.google.com/presentation/d/1gT3PQJ2TQD9geq9jgBBuQAq2miAu_-3PpKh3TcY8lMQ/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u14",
+   "title": "What time do you...?",
+   "note": "Present simple: perguntas",
+   "url": "https://docs.google.com/presentation/d/1p77LTXLhDoPGAjWyBtwKzxcCNKwW6LIRg1Lvb63-JKs/edit",
+   "status": "todo"
+  },
+  {
+   "id": "u15",
+   "title": "We love travelling!",
+   "note": "Viagens e revisão do livro",
+   "url": "https://docs.google.com/presentation/d/1PuBPzc8ogiBquC1Q-3U5MRtd23ZPFOyGZnV9yTQdNYA/edit",
+   "status": "todo"
+  }
+ ],
+ "cando": [
+  {
+   "id": "u1a",
+   "u": "u1",
+   "t": "Dizer meu nome e soletrar (Can you spell that?)",
+   "video": "https://www.youtube.com/results?search_query=spelling+names+english+alphabet+beginners"
+  },
+  {
+   "id": "u1b",
+   "u": "u1",
+   "t": "Cumprimentar e responder How are you?",
+   "video": "https://www.youtube.com/results?search_query=how+are+you+answers+english+beginners"
+  },
+  {
+   "id": "u2a",
+   "u": "u2",
+   "t": "Apresentar pessoas: This is my friend.",
+   "video": "https://www.youtube.com/results?search_query=introducing+people+this+is+my+friend+english+beginners"
+  },
+  {
+   "id": "u2b",
+   "u": "u2",
+   "t": "Usar I am · you are · he is · they are",
+   "video": "https://www.youtube.com/results?search_query=verb+to+be+am+is+are+english+beginners"
+  },
+  {
+   "id": "u3a",
+   "u": "u3",
+   "t": "Fazer frases negativas: isn't · aren't",
+   "video": "https://www.youtube.com/results?search_query=verb+to+be+negative+isn%27t+aren%27t+english+beginners"
+  },
+  {
+   "id": "u3b",
+   "u": "u3",
+   "t": "Dizer as cores das minhas coisas",
+   "video": "https://www.youtube.com/results?search_query=colors+in+english+beginners"
+  },
+  {
+   "id": "u4a",
+   "u": "u4",
+   "t": "Perguntar Are you…? / Is he…?",
+   "video": "https://www.youtube.com/results?search_query=verb+to+be+questions+are+you+is+he+english+beginners"
+  },
+  {
+   "id": "u4b",
+   "u": "u4",
+   "t": "Responder Yes, I am / No, I'm not",
+   "video": "https://www.youtube.com/results?search_query=short+answers+yes+I+am+no+I%27m+not+english"
+  },
+  {
+   "id": "u5a",
+   "u": "u5",
+   "t": "Usar my · your · his · her · our · their",
+   "video": "https://www.youtube.com/results?search_query=possessive+adjectives+english+beginners"
+  },
+  {
+   "id": "u5b",
+   "u": "u5",
+   "t": "Dizer de quem é: It's my friend's house.",
+   "video": "https://www.youtube.com/results?search_query=possessive+s+english+beginners"
+  },
+  {
+   "id": "u6a",
+   "u": "u6",
+   "t": "Dizer o que tenho: I've got two bags.",
+   "video": "https://www.youtube.com/results?search_query=have+got+english+beginners"
+  },
+  {
+   "id": "u6b",
+   "u": "u6",
+   "t": "Contar e entender números",
+   "video": "https://www.youtube.com/results?search_query=numbers+1+to+100+english+pronunciation"
+  },
+  {
+   "id": "u7a",
+   "u": "u7",
+   "t": "Descrever meu trabalho: There is / There are",
+   "video": "https://www.youtube.com/results?search_query=there+is+there+are+english+beginners"
+  },
+  {
+   "id": "u7b",
+   "u": "u7",
+   "t": "Usar also e too",
+   "video": "https://www.youtube.com/results?search_query=also+vs+too+english+beginners"
+  },
+  {
+   "id": "u8a",
+   "u": "u8",
+   "t": "Dizer como está o tempo: It's sunny.",
+   "video": "https://www.youtube.com/results?search_query=weather+vocabulary+english+beginners"
+  },
+  {
+   "id": "u8b",
+   "u": "u8",
+   "t": "Falar das estações do ano",
+   "video": "https://www.youtube.com/results?search_query=seasons+english+beginners"
+  },
+  {
+   "id": "u9a",
+   "u": "u9",
+   "t": "Falar das roupas que uso",
+   "video": "https://www.youtube.com/results?search_query=clothes+vocabulary+english+beginners"
+  },
+  {
+   "id": "u9b",
+   "u": "u9",
+   "t": "Usar a e an",
+   "video": "https://www.youtube.com/results?search_query=a+or+an+english+beginners"
+  },
+  {
+   "id": "u10a",
+   "u": "u10",
+   "t": "Dizer as partes do corpo",
+   "video": "https://www.youtube.com/results?search_query=parts+of+the+body+english+beginners"
+  },
+  {
+   "id": "u10b",
+   "u": "u10",
+   "t": "Usar plurais irregulares (feet, teeth)",
+   "video": "https://www.youtube.com/results?search_query=irregular+plurals+english+beginners"
+  },
+  {
+   "id": "u11a",
+   "u": "u11",
+   "t": "Contar minha rotina da manhã",
+   "video": "https://www.youtube.com/results?search_query=morning+routine+english+beginners"
+  },
+  {
+   "id": "u11b",
+   "u": "u11",
+   "t": "Usar always · usually · sometimes · never",
+   "video": "https://www.youtube.com/results?search_query=adverbs+of+frequency+english+beginners"
+  },
+  {
+   "id": "u12a",
+   "u": "u12",
+   "t": "Falar do meu dia e fim de semana",
+   "video": "https://www.youtube.com/results?search_query=daily+routine+english+beginners+do+go+play+have"
+  },
+  {
+   "id": "u12b",
+   "u": "u12",
+   "t": "Usar o -s com he / she / it",
+   "video": "https://www.youtube.com/results?search_query=present+simple+third+person+s+english+beginners"
+  },
+  {
+   "id": "u13a",
+   "u": "u13",
+   "t": "Falar dos meus hábitos saudáveis",
+   "video": "https://www.youtube.com/results?search_query=healthy+habits+english+beginners"
+  },
+  {
+   "id": "u13b",
+   "u": "u13",
+   "t": "Fazer frases negativas com don't / doesn't",
+   "video": "https://www.youtube.com/results?search_query=present+simple+negative+don%27t+doesn%27t+english+beginners"
+  }
+ ],
+ "links": {},
+ "homework": [],
+ "payments": [],
+ "recordings": [],
+ "absences": [],
+ "tasks": [],
+ "lessons": [],
+ "phrases": [],
+ "videos": [],
+ "quiz": [],
+ "writing": [],
+ "reports": [],
+ "resources": [
+  {
+   "id": "r0",
+   "kind": "read",
+   "title": "Voice Your English · Book 1 (A1)",
+   "url": "https://drive.google.com/file/d/1kQz_Ibm256Cb2aoyS7pL46lTNqlfDc8N/view",
+   "note": "O livro do curso em PDF, com todas as lições."
+  }
+ ],
+ "recCount": "0"
+}
