@@ -65,13 +65,13 @@
       '<form class="login-body" id="loginForm" novalidate>' +
       '<p class="eyebrow" style="margin:0">Voice Your English</p><h1>' + (state.sent ? "Confira seu e-mail" : "Entrar") + '</h1>' +
       (state.sent
-        ? '<p>Enviamos um e-mail para <b>' + esc(state.email) + '</b>. Toque no link do e-mail <b>ou</b> digite o código abaixo.</p>' +
+        ? '<p>Enviamos um código para <b>' + esc(state.email) + '</b>. Digite aqui embaixo: assim você fica conectado neste celular e não precisa entrar de novo.</p>' +
           '<label class="field">Código<input id="code" class="code-in" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="••••••"></label>' +
           '<button class="big-btn" type="submit" id="go">Entrar</button>' +
           '<button class="link-btn" type="button" id="back">Usar outro e-mail</button>'
-        : '<p>Use o e-mail que você passou para a teacher. Não precisa de senha: a gente te manda um link de acesso.</p>' +
+        : '<p>Use o e-mail que você passou para a teacher. Não precisa de senha: a gente te manda um código de acesso. Você só faz isso uma vez em cada celular.</p>' +
           '<label class="field">Seu e-mail<input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="voce@email.com" value="' + esc(state.email || "") + '"></label>' +
-          '<button class="big-btn" type="submit" id="go">Receber acesso</button>') +
+          '<button class="big-btn" type="submit" id="go">Receber código</button>') +
       '<div class="msg' + (state.err ? " err" : "") + '" id="lmsg"' + (state.msg || state.err ? "" : " hidden") + '>' + esc(state.err || state.msg || "") + '</div>' +
       '</form></div></div>';
     var f = document.getElementById("loginForm");
