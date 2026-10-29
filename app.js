@@ -63,42 +63,44 @@
     state = state || {};
     root.innerHTML = '<div class="login"><div class="login-card"><img class="lb" src="assets/banner.jpg" alt="Voice Your English">' +
       '<form class="login-body" id="loginForm" novalidate>' +
-      '<p class="eyebrow" style="margin:0">Voice Your English</p><h1>' + (state.sent ? "Confira seu e-mail" : "Entrar") + '</h1>' +
-      (state.sent
-        ? '<p>Enviamos um código para <b>' + esc(state.email) + '</b>. Digite aqui embaixo: assim você fica conectado neste celular e não precisa entrar de novo.</p>' +
-          '<label class="field">Código<input id="code" class="code-in" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="••••••"></label>' +
-          '<button class="big-btn" type="submit" id="go">Entrar</button>' +
-          '<button class="link-btn" type="button" id="back">Usar outro e-mail</button>'
-        : '<p>Use o e-mail que você passou para a teacher. Não precisa de senha: a gente te manda um código de acesso. Você só faz isso uma vez em cada celular.</p>' +
-          '<label class="field">Seu e-mail<input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="voce@email.com" value="' + esc(state.email || "") + '"></label>' +
-          '<button class="big-btn" type="submit" id="go">Receber código</button>') +
+      '<p class="eyebrow" style="margin:0">Voice Your English</p><h1>Entrar</h1>' +
+      '<p>Use o e-mail e a senha que a teacher te mandou. Você entra uma vez e o app fica conectado neste celular.</p>' +
+      '<label class="field">E-mail<input id="email" type="email" inputmode="email" autocomplete="username" required placeholder="voce@email.com" value="' + esc(state.email || "") + '"></label>' +
+      '<label class="field">Senha<input id="pass" type="password" autocomplete="current-password" required placeholder="Sua senha"></label>' +
+      '<button class="big-btn" type="submit" id="go">Entrar</button>' +
+      '<p class="note-sm" style="margin:0">Esqueceu a senha? ' + (C.whatsapp ? '<a href="https://wa.me/' + esc(C.whatsapp) + '" target="_blank" rel="noopener">Fale com a teacher</a>' : 'Fale com a teacher') + ' e ela cria uma nova.</p>' +
       '<div class="msg' + (state.err ? " err" : "") + '" id="lmsg"' + (state.msg || state.err ? "" : " hidden") + '>' + esc(state.err || state.msg || "") + '</div>' +
       '</form></div></div>';
     var f = document.getElementById("loginForm");
-    var back = document.getElementById("back");
-    if (back) back.onclick = function () { showLogin({ email: state.email }); };
     f.onsubmit = function (e) {
       e.preventDefault();
-      var go = document.getElementById("go"); go.disabled = true;
-      if (!state.sent) {
-        var em = document.getElementById("email").value.trim().toLowerCase();
-        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { go.disabled = false; return showLogin({ email: em, err: "Confira o e-mail digitado." }); }
-        sb.auth.signInWithOtp({ email: em, options: { emailRedirectTo: appUrl(), shouldCreateUser: true } }).then(function (r) {
-          if (r.error) {
-            var m = /rate|seconds|limit/i.test(r.error.message) ? "Muitos pedidos seguidos. Espere um minutinho e tente de novo." : "Não deu para enviar agora. Tente de novo em instantes.";
-            return showLogin({ email: em, err: m });
-          }
-          showLogin({ email: em, sent: true });
-        });
-      } else {
-        var code = document.getElementById("code").value.replace(/\D/g, "");
-        if (code.length < 6) { go.disabled = false; var lm = document.getElementById("lmsg"); lm.hidden = false; lm.className = "msg err"; lm.textContent = "Digite o código do e-mail."; return; }
-        sb.auth.verifyOtp({ email: state.email, token: code, type: "email" }).then(function (r) {
-          if (r.error) return showLogin({ email: state.email, sent: true, err: "Código inválido ou expirado. Confira ou peça outro." });
-          boot();
-        });
-      }
+      var go = document.getElementById("go");
+      var em = document.getElementById("email").value.trim().toLowerCase(), pw = document.getElementById("pass").value;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) || !pw) { return showLogin({ email: em, err: "Preencha e-mail e senha." }); }
+      go.disabled = true; go.textContent = "Entrando…";
+      sb.auth.signInWithPassword({ email: em, password: pw }).then(function (r) {
+        if (r.error) {
+          var m = /invalid/i.test(r.error.message) ? "E-mail ou senha não conferem. Confira e tente de novo." : /rate|many/i.test(r.error.message) ? "Muitas tentativas. Espere um minutinho." : "Não deu para entrar agora. Confira a internet.";
+          return showLogin({ email: em, err: m });
+        }
+        boot();
+      });
     };
+  }
+
+  function accountModal() {
+    modal('<h2>Minha conta</h2><p>' + esc(me.email) + '</p>' +
+      '<label class="field">Nova senha<input id="np" type="password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres"></label>' +
+      '<div class="modal-acts"><button class="tb-btn" type="button" id="lo">Sair do app</button><button class="tb-btn primary" type="button" id="sp">Trocar senha</button></div>',
+      function (w, close) {
+        w.querySelector("#lo").onclick = function () { close(); logout(); };
+        w.querySelector("#sp").onclick = function () {
+          var v = w.querySelector("#np").value, btn = this;
+          if (v.length < 6) { toast("A senha precisa ter pelo menos 6 caracteres."); return; }
+          btn.disabled = true;
+          sb.auth.updateUser({ password: v }).then(function (r) { btn.disabled = false; if (r.error) { toast("Não deu para trocar. Tente outra senha."); } else { close(); toast("Senha trocada ✓"); } });
+        };
+      });
   }
 
   function boot() {
@@ -164,10 +166,11 @@
       };
       root.innerHTML = topbar(teacherView
         ? '<a class="tb-btn" href="#">← Alunos</a>'
-        : '<button class="tb-btn" id="out">Sair</button>') +
+        : '<button class="tb-btn" id="acct">Conta</button>') +
         (teacherView ? '<div class="wrap"><p class="note-sm" style="margin:10px 0 0">Você está vendo o painel de <b>' + esc(st.name) + '</b>. Use “Editar dashboard” para mudar e depois “Publicar alterações”.</p></div>' : installHTML()) +
         '<div id="app"></div>';
       var out = document.getElementById("out"); if (out) out.onclick = logout;
+      var ac = document.getElementById("acct"); if (ac) ac.onclick = accountModal;
       var ib = document.getElementById("installBtn"); if (ib) ib.onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; ib.hidden = true; } };
       var ctx = {
         data: fixData(JSON.parse(JSON.stringify(st.data || {}))),
@@ -269,12 +272,12 @@
   function teacherHome() {
     current = null;
     document.title = "Teacher · Voice Your English";
-    root.innerHTML = topbar('<button class="tb-btn primary" id="newSt">+ Aluno</button><button class="tb-btn" id="out">Sair</button>') +
+    root.innerHTML = topbar('<button class="tb-btn primary" id="newSt">+ Aluno</button><button class="tb-btn" id="acct">Conta</button>') +
       '<div class="wrap t-head"><p class="eyebrow">Voice Your English · Teacher</p><h1>Hi, <em>Sarah</em>!</h1><p class="lede">Seus alunos e tudo o que eles enviaram pelo app, em tempo real.</p></div>' +
       installHTML() +
       '<div class="wrap t-grid" style="padding-top:16px"><section class="t-sec"><h2>Novidades <span class="badge" id="nb" hidden></span></h2><div class="feed" id="feed"><div class="empty-t">Carregando…</div></div></section>' +
       '<section class="t-sec"><h2>Alunos</h2><div class="st-list" id="sts"><div class="empty-t">Carregando…</div></div></section></div>';
-    document.getElementById("out").onclick = logout;
+    document.getElementById("acct").onclick = accountModal;
     document.getElementById("newSt").onclick = newStudentModal;
     var ib = document.getElementById("installBtn"); if (ib) ib.onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; ib.hidden = true; } };
     loadStudents().then(loadFeed);
@@ -291,7 +294,7 @@
         var d = s.data || {}, last = (d.lessons || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; })[0];
         return '<div class="st-card"><span class="st-av" aria-hidden="true">' + esc(initials(s.name)) + '</span><div class="st-main"><b>' + esc(s.name) + payState(d) + (s.active ? "" : ' <span class="pill-s warn">inativo</span>') + '</b>' +
           '<small>' + esc((d.student && d.student.level) || "") + (last ? ' · última aula ' + esc(last.date.slice(8, 10) + "/" + last.date.slice(5, 7)) : "") + ' · ' + esc(s.email) + '</small></div>' +
-          '<div class="st-acts"><a class="tb-btn primary" href="#/aluno/' + s.id + '">Abrir</a><button class="tb-btn" data-invite="' + s.id + '">Convite</button></div></div>';
+          '<div class="st-acts"><a class="tb-btn primary" href="#/aluno/' + s.id + '">Abrir</a><button class="tb-btn" data-invite="' + s.id + '">Acesso</button></div></div>';
       }).join("");
     });
   }
@@ -335,17 +338,41 @@
         .then(function () { toast("Marcado como pago ✓"); return loadStudents().then(loadFeed); })
         .catch(function () { b.disabled = false; toast("Não deu para salvar."); });
     }
-    if (b.dataset.invite) {
-      var s = stCache[b.dataset.invite]; if (!s) return;
-      var first = (s.name || "").split(" ")[0];
-      var txt = "Oi, " + first + "! 😊 Seu painel de inglês agora é um app da Voice Your English.\n\n1. Abra: " + appUrl() + "\n2. Entre com o e-mail " + s.email + " e toque no link que chegar no seu e-mail.\n3. Para virar app no celular: no Android toque em \"Instalar\"; no iPhone, Compartilhar → Adicionar à Tela de Início.\n\nQualquer dúvida, me chama!";
-      var ok = function () { toast("Convite copiado! Cole no WhatsApp do aluno."); };
-      try { navigator.clipboard.writeText(txt).then(ok, function () { window.prompt("Copie o convite:", txt); }); } catch (err) { window.prompt("Copie o convite:", txt); }
-    }
+    if (b.dataset.invite) { var s0 = stCache[b.dataset.invite]; if (s0) accessModal(s0); }
   });
 
+  function genPass() { var c = "abcdefghjkmnpqrstuvwxyz23456789", o = "", a = new Uint32Array(6); crypto.getRandomValues(a); for (var i = 0; i < 6; i++) o += c[a[i] % c.length]; return "vye" + o; }
+  function inviteText(name, email, pw) {
+    var first = (name || "").split(" ")[0];
+    return "Oi, " + first + "! 😊 Seu painel de inglês agora é um app da Voice Your English.\n\n1. Abra: " + appUrl() + "\n2. Entre com:\nE-mail: " + email + "\nSenha: " + pw + "\n3. Para virar app no celular: no Android toque em \"Instalar\"; no iPhone, Compartilhar → Adicionar à Tela de Início.\n\nVocê entra uma vez e fica conectado. Se quiser, troque a senha em \"Conta\". Qualquer dúvida, me chama!";
+  }
+  function copyText(txt, msg) {
+    var ok = function () { toast(msg || "Copiado!", 5000); };
+    try { navigator.clipboard.writeText(txt).then(ok, function () { window.prompt("Copie:", txt); }); } catch (err) { window.prompt("Copie:", txt); }
+  }
+  function accessModal(s) {
+    var pw = genPass();
+    modal('<h2>Acesso de ' + esc((s.name || "").split(" ")[0]) + '</h2><p>Confira o e-mail e a senha do aluno. Ao salvar, o convite é copiado para você colar no WhatsApp.</p>' +
+      '<label class="field">E-mail<input id="ae" type="email" value="' + esc(s.email) + '"></label>' +
+      '<label class="field">Senha<input id="ap" value="' + esc(pw) + '"></label>' +
+      '<p class="note-sm" style="margin:0">Se ele já tinha senha, ela é trocada por esta.</p>' +
+      '<div class="modal-acts"><button class="tb-btn" type="button" data-close>Cancelar</button><button class="tb-btn primary" type="button" id="asave">Salvar e copiar convite</button></div>',
+      function (w, close) {
+        w.querySelector("#asave").onclick = function () {
+          var em = w.querySelector("#ae").value.trim().toLowerCase(), p2 = w.querySelector("#ap").value.trim(), btn = this;
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { toast("Confira o e-mail."); return; }
+          if (p2.length < 6) { toast("A senha precisa ter pelo menos 6 caracteres."); return; }
+          btn.disabled = true;
+          var step = em === String(s.email).toLowerCase() ? Promise.resolve({}) : sb.rpc("vye_change_email", { p_student: s.id, p_email: em });
+          step.then(function (r) { if (r && r.error) throw r.error; return sb.rpc("vye_set_login", { p_email: em, p_password: p2 }); })
+            .then(function (r) { if (r.error) throw r.error; s.email = em; close(); copyText(inviteText(s.name, em, p2), "Acesso salvo ✓ Convite copiado: cole no WhatsApp do aluno."); loadStudents(); })
+            .catch(function (err) { btn.disabled = false; toast(/duplicate|unique/i.test(String(err && err.message)) ? "Esse e-mail já é de outro aluno." : "Não deu para salvar o acesso."); });
+        };
+      });
+  }
+
   function newStudentModal() {
-    modal('<h2>Novo aluno</h2><p>O aluno entra no app com este e-mail.</p>' +
+    modal('<h2>Novo aluno</h2><p>Eu crio a senha dele e copio o convite pronto para você mandar no WhatsApp.</p>' +
       '<div class="grid2"><label class="field">Nome<input id="nn" required placeholder="Ex.: Maria Souza"></label><label class="field">E-mail<input id="ne" type="email" required placeholder="maria@email.com"></label></div>' +
       '<div class="grid2"><label class="field">Nível<select id="nl"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></label><label class="field">Horário<input id="nt" type="time" value="18:00"></label></div>' +
       '<div class="field">Dias de aula<div class="days">' + ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map(function (d, i) { return '<label><input type="checkbox" value="' + i + '">' + d + '</label>'; }).join("") + '</div></div>' +
@@ -365,7 +392,12 @@
             return sb.from("students").insert({ name: name, email: email, data: T }).select("id").single();
           }).then(function (r) {
             if (r.error) throw r.error;
-            close(); toast("Aluno cadastrado ✓ Toque em Convite para mandar o acesso."); loadStudents();
+            var pw2 = genPass();
+            return sb.rpc("vye_set_login", { p_email: email, p_password: pw2 }).then(function (r2) {
+              if (r2.error) throw r2.error;
+              close(); loadStudents();
+              copyText(inviteText(name, email, pw2), "Aluno cadastrado ✓ Convite com e-mail e senha copiado: cole no WhatsApp.");
+            });
           }).catch(function (err) { btn.disabled = false; toast(/duplicate|unique/i.test(String(err && err.message)) ? "Esse e-mail já está cadastrado." : "Não deu para cadastrar."); });
         };
       });
