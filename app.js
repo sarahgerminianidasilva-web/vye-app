@@ -65,8 +65,8 @@
       '<form class="login-body" id="loginForm" novalidate>' +
       '<p class="eyebrow" style="margin:0">Voice Your English</p><h1>Entrar</h1>' +
       '<p>Use o e-mail e a senha que a teacher te mandou. Você entra uma vez e o app fica conectado neste celular.</p>' +
-      '<label class="field">E-mail<input id="email" type="email" inputmode="email" autocomplete="username" required placeholder="voce@email.com" value="' + esc(state.email || "") + '"></label>' +
-      '<label class="field">Senha<input id="pass" type="password" autocomplete="current-password" required placeholder="Sua senha"></label>' +
+      '<label class="field">E-mail<input id="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="voce@email.com" value="' + esc(state.email || "") + '"></label>' +
+      '<label class="field">Senha<input id="pass" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="Sua senha"></label>' +
       '<button class="big-btn" type="submit" id="go">Entrar</button>' +
       '<p class="note-sm" style="margin:0">Esqueceu a senha? ' + (C.whatsapp ? '<a href="https://wa.me/' + esc(C.whatsapp) + '" target="_blank" rel="noopener">Fale com a teacher</a>' : 'Fale com a teacher') + ' e ela cria uma nova.</p>' +
       '<div class="msg' + (state.err ? " err" : "") + '" id="lmsg"' + (state.msg || state.err ? "" : " hidden") + '>' + esc(state.err || state.msg || "") + '</div>' +
