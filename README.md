@@ -22,3 +22,7 @@ App web instalável (PWA) para alunos e para a teacher.
 ```sql
 update public.students set data = data || '{"lessons":[...],"homework":[...]}'::jsonb where name = 'Claudinei';
 ```
+
+## Agenda e controle de aulas (teacher)
+- `board.js`: card de agenda na tela inicial da teacher e páginas `#/controle` (lista) e `#/controle/<id>` (ficha com aulas recentes e histórico).
+- Dados em `teacher_board(id=1, data jsonb)`, só a teacher lê e escreve (RLS). Formato: `{A:[alunos com slots, aulas…], HIST:{id:[[data,título,status,obs]]}, EXTRAS:[reposições], updated}`.
