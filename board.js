@@ -6,7 +6,7 @@
   var MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
   var ST = { p: ["Presente", "ok"], fj: ["Falta justificada", "warn"], fi: ["Falta injustificada", "bad"], s: ["Sem registro", "idle"], f: ["Agendada", "info"], h: ["Hoje", "info"], rc: ["Reposição cancelada", "idle"], c: ["Aula cancelada", "idle"] };
   var PAG = { Pago: "ok", Pendente: "warn", Atrasado: "bad" };
-  var FORMATOS = ["Todos", "Individual", "Dupla", "Família", "Trabalho"];
+  var FORMATOS = ["Todos", "Individual", "Dupla", "Família", "Trabalho", "Terceirizado"];
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
