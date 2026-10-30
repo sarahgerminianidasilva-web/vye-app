@@ -274,7 +274,7 @@
     current = null;
     document.title = "Teacher · Voice Your English";
     root.innerHTML = topbar('<button class="tb-btn primary" id="newSt">+ Aluno</button><button class="tb-btn" id="acct">Conta</button>') +
-      '<div class="wrap t-head"><p class="eyebrow">Voice Your English · Teacher</p><h1>Hi, <em>Sarah</em>!</h1><p class="lede">Seus alunos e tudo o que eles enviaram pelo app, em tempo real.</p></div>' +
+      '<div class="wrap" style="padding-top:16px"><img class="banner" src="assets/banner.jpg" alt="Voice Your English · English Course" width="1920" height="480"></div>' + '<div class="wrap t-head"><p class="eyebrow">Voice Your English · Teacher</p><h1>Hi, <em>Sarah</em>!</h1><p class="lede">Seus alunos e tudo o que eles enviaram pelo app, em tempo real.</p></div>' +
       installHTML() + '<div id="bdAgenda"><section class="t-sec wrap bd-agenda"><div class="bd-h"><h2>Agenda</h2><a class="tb-btn primary" href="#/controle">Controle de aulas →</a></div><div class="empty-t">Carregando agenda e aulas sem registro…</div></section></div>' +
       '<div class="wrap t-grid" style="padding-top:16px"><section class="t-sec"><h2>Novidades <span class="badge" id="nb" hidden></span></h2><div class="feed" id="feed"><div class="empty-t">Carregando…</div></div></section>' +
       '<section class="t-sec"><h2>Alunos</h2><div class="st-list" id="sts"><div class="empty-t">Carregando…</div></div></section></div>';
