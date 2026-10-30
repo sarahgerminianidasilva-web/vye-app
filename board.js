@@ -45,12 +45,16 @@
       }).join("") + '</div></div>';
     }
     var rep = (B.A || []).filter(function (s) { return s.repos > 0; });
+    var pa = pendingAll(B);
+    var paHTML = pa.length ? '<h3>Aulas sem registro <span class="bd-pill warn">' + pa.length + '</span></h3><p class="bd-help">Não achei gravação, resumo do Gemini nem anotação no caderno. Toque no que aconteceu e eu atualizo o app, a planilha e a página do aluno.</p>' + pa.map(function (x) {
+      return '<div class="bd-row bd-pend"><span class="bd-date">' + dm(x.a[0]) + '<small>' + DIAS[dow(x.a[0])] + '</small></span><div class="bd-main"><a href="#/controle/' + x.s.id + '"><b>' + esc(x.s.nome) + '</b></a>' + decButtons(x.s.id, x.a[0]) + '</div></div>';
+    }).join("") : "";
     var pend = (B.A || []).filter(function (s) { return s.pag === "Pendente"; });
     return '<section class="t-sec wrap bd-agenda"><div class="bd-h"><h2>Agenda</h2><a class="tb-btn primary" href="#/controle">Controle de aulas →</a></div>' +
       '<div class="bd-card"><h3>Hoje</h3>' + (today.length ? today.map(function (x) {
         return '<div class="bd-row"><span class="bd-hour">' + x.h + '</span><div class="bd-main"><a href="#/controle/' + x.s.id + '"><b>' + esc(x.s.nome) + '</b></a>' + (x.tipo !== "Aula" ? ' <span class="bd-pill info">' + esc(x.tipo) + '</span>' : "") + '<small>' + esc(x.s.licao) + '</small></div>' + chip(hourState(x.h)) + '</div>';
       }).join("") : '<p class="bd-empty">Nenhuma aula hoje.</p>') +
-      '<h3>Próximos 7 dias</h3>' + (up || '<p class="bd-empty">Nada agendado.</p>') +
+      paHTML + '<h3>Próximos 7 dias</h3>' + (up || '<p class="bd-empty">Nada agendado.</p>') +
       ((rep.length || pend.length) ? '<h3>Precisa de atenção</h3>' + rep.map(function (s) {
         return '<a class="bd-alert" href="#/controle/' + s.id + '"><span class="bd-dot warn"></span>' + esc(s.nome) + ' · ' + s.repos + ' reposiç' + (s.repos === 1 ? "ão" : "ões") + ' em aberto</a>';
       }).join("") + pend.map(function (s) {
@@ -74,11 +78,22 @@
       }).join("") : '<p class="bd-empty">Nenhum aluno com esse filtro.</p>') + '</div>';
   }
 
-  function item(a) {
-    var st = ST[a[2]] || ST.s, t = a[1] || "";
-    return '<div class="bd-row"><span class="bd-date">' + dm(a[0]) + '<small>' + DIAS[dow(a[0])] + '</small></span><div class="bd-main">' +
-      (a[2] === "p" ? (t ? '<b>' + esc(t) + '</b>' : '<span class="bd-mut">Conteúdo não registrado</span>') : '<span class="bd-mut">' + (esc(t) || "—") + '</span>') +
-      (a[3] ? '<small>' + esc(a[3]) + '</small>' : "") + '</div>' + chip(st) + '</div>';
+  /* A class that already happened but has no recording, Gemini notes or notebook entry */
+  function pending(a) { var t = iso(new Date()); return (a[2] === "s" && a[0] <= t) || ((a[2] === "f" || a[2] === "h") && a[0] < t); }
+  function decButtons(sid, date) {
+    var at = ' data-sid="' + esc(sid) + '" data-date="' + esc(date) + '"';
+    return '<div class="bd-dec"><button class="bd-db" data-dec="fj"' + at + '>Faltou (avisou)</button><button class="bd-db" data-dec="fi"' + at + '>Faltou (sem aviso)</button><button class="bd-db ok" data-dec="p"' + at + '>Aconteceu · esqueci de gravar</button></div>';
+  }
+  function item(a, sid) {
+    var pend = sid && pending(a), st = pend ? ["Sem registro", "warn"] : (ST[a[2]] || ST.s), t = a[1] || "";
+    return '<div class="bd-row' + (pend ? ' bd-pend' : '') + '"><span class="bd-date">' + dm(a[0]) + '<small>' + DIAS[dow(a[0])] + '</small></span><div class="bd-main">' +
+      (a[2] === "p" ? (t ? '<b>' + esc(t) + '</b>' : '<span class="bd-mut">Conteúdo não registrado</span>') : '<span class="bd-mut">' + (esc(t) || (pend ? "Sem gravação, resumo ou caderno. O que aconteceu?" : "—")) + '</span>') +
+      (a[3] ? '<small>' + esc(a[3]) + '</small>' : "") + (pend ? decButtons(sid, a[0]) : "") + '</div>' + chip(st) + '</div>';
+  }
+  function pendingAll(B) {
+    var lim = iso(new Date(Date.now() - 45 * 864e5)), out = [];
+    (B.A || []).forEach(function (s) { all(B, s).forEach(function (a) { if (a[0] >= lim && pending(a)) out.push({ s: s, a: a }); }); });
+    return out.sort(function (x, y) { return x.a[0] < y.a[0] ? 1 : -1; });
   }
 
   /* One student's page */
@@ -90,7 +105,7 @@
     hist.forEach(function (a) { var k = a[0].slice(0, 7); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(a); });
     var histHTML = order.reverse().map(function (k, i) {
       var l = groups[k], n = given(l), p = k.split("-");
-      return '<details class="bd-mes"' + (i === 0 ? " open" : "") + '><summary><b>' + MESES[+p[1] - 1] + ' ' + p[0] + '</b><span>' + n + ' aula' + (n === 1 ? "" : "s") + (l.length > n ? ' · ' + (l.length - n) + ' outro' + (l.length - n === 1 ? "" : "s") : "") + '</span></summary>' + l.slice().reverse().map(item).join("") + '</details>';
+      return '<details class="bd-mes"' + (i === 0 ? " open" : "") + '><summary><b>' + MESES[+p[1] - 1] + ' ' + p[0] + '</b><span>' + n + ' aula' + (n === 1 ? "" : "s") + (l.length > n ? ' · ' + (l.length - n) + ' outro' + (l.length - n === 1 ? "" : "s") : "") + '</span></summary>' + l.slice().reverse().map(function (a) { return item(a, s.id); }).join("") + '</details>';
     }).join("");
     return '<div class="wrap t-head"><a class="bd-back" href="#/controle">← Controle de aulas</a><p class="eyebrow">' + esc(fmt(s.formato)) + ' · ' + esc(s.nivel) + ' · ' + esc(s.horario) + '</p><h1>' + esc(s.nome) + '</h1>' + (s.nota ? '<p class="lede">' + esc(s.nota) + '</p>' : "") + '</div>' +
       '<div class="wrap bd-kpis">' +
@@ -99,9 +114,9 @@
       '<div class="bd-kpi"><span>Aluno desde</span><b class="sm">' + (first ? first[0].split("-").reverse().join("/") : "—") + '</b><small>' + given(list) + ' aulas registradas</small></div>' +
       '<div class="bd-kpi"><span>Reposições em aberto</span><b' + (s.repos ? ' class="bad"' : "") + '>' + (s.repos || 0) + '</b></div>' +
       '<div class="bd-kpi"><span>Mensalidade</span><b class="sm">' + esc(s.valor) + '</b><small>' + esc(s.venc) + ' · <span class="bd-pill ' + (PAG[s.pag] || "idle") + '">' + esc(s.pag) + '</span></small></div>' +
-      '</div><div class="wrap bd-cols"><section class="bd-card"><h3>Aulas recentes</h3>' + ((s.aulas || []).length ? s.aulas.slice().reverse().map(item).join("") : '<p class="bd-empty">Nenhuma aula registrada ainda.</p>') + '</section>' +
+      '</div><div class="wrap bd-cols"><section class="bd-card"><h3>Aulas recentes</h3>' + ((s.aulas || []).length ? s.aulas.slice().reverse().map(function (a) { return item(a, s.id); }).join("") : '<p class="bd-empty">Nenhuma aula registrada ainda.</p>') + '</section>' +
       (hist.length ? '<section class="bd-card"><h3>Histórico desde o início <small>' + hist.length + ' registros</small></h3>' + histHTML + '</section>' : "") + '</div>';
   }
 
-  window.VYEBoard = { agenda: agenda, control: control, student: student };
+  window.VYEBoard = { agenda: agenda, control: control, student: student, pendingAll: pendingAll };
 })();
