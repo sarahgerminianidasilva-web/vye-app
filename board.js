@@ -114,7 +114,7 @@
       '<div class="bd-kpi"><span>Aluno desde</span><b class="sm">' + (first ? first[0].split("-").reverse().join("/") : "—") + '</b><small>' + given(list) + ' aulas registradas</small></div>' +
       '<div class="bd-kpi"><span>Reposições em aberto</span><b' + (s.repos ? ' class="bad"' : "") + '>' + (s.repos || 0) + '</b></div>' +
       '<div class="bd-kpi"><span>Mensalidade</span><b class="sm">' + esc(s.valor) + '</b><small>' + esc(s.venc) + ' · <span class="bd-pill ' + (PAG[s.pag] || "idle") + '">' + esc(s.pag) + '</span></small></div>' +
-      '</div><div class="wrap bd-cols"><section class="bd-card"><h3>Aulas recentes</h3>' + ((s.aulas || []).length ? s.aulas.slice().reverse().map(function (a) { return item(a, s.id); }).join("") : '<p class="bd-empty">Nenhuma aula registrada ainda.</p>') + '</section>' +
+      '</div>' + (window.VYECal ? '<div class="wrap">' + window.VYECal.html({ days: (s.slots || []).map(function (x) { return x[0]; }), year: 2027, semFeriado: !!s.semFeriado, teacher: true }) + '</div>' : '') + '<div class="wrap bd-cols"><section class="bd-card"><h3>Aulas recentes</h3>' + ((s.aulas || []).length ? s.aulas.slice().reverse().map(function (a) { return item(a, s.id); }).join("") : '<p class="bd-empty">Nenhuma aula registrada ainda.</p>') + '</section>' +
       (hist.length ? '<section class="bd-card"><h3>Histórico desde o início <small>' + hist.length + ' registros</small></h3>' + histHTML + '</section>' : "") + '</div>';
   }
 

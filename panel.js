@@ -326,7 +326,7 @@ function progHTML(){var S=cdSummary(),pub=(D.reports||[]).some(function(r){retur
  '<div class="prog"><div class="tabs" role="tablist"><button type="button" role="tab" class="tab" data-ptab="check" aria-selected="'+(progTab==="check")+'">Eu consigo…</button><button type="button" role="tab" class="tab" data-ptab="rep" aria-selected="'+(progTab==="rep")+'">Minhas avaliações</button></div>'+(progTab==="check"?checkHTML():repHTML())+'</div></details></div>'}
 function planHTML(){
  return'<div class="wrap"><details class="plan" id="plan"'+(planOpen||editing?' open':'')+'><summary><span class="ico">'+svg("star")+'</span><span class="pt"><b>Meu Plano VYE</b><small>Suas aulas, reposições e mensalidade</small></span><span class="chev" aria-hidden="true"></span></summary>'+
- '<div class="control">'+absHTML()+payHTML()+'</div></details></div>';
+ '<div class="control">'+absHTML()+payHTML()+'</div>'+(window.VYECal?window.VYECal.html({days:(D.student||{}).days,year:2027,semFeriado:!!(D.student||{}).semFeriado}):'')+'</details></div>';
 }
 
 function editHeadHTML(){
