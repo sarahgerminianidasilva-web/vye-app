@@ -275,7 +275,7 @@
     document.title = "Teacher · Voice Your English";
     root.innerHTML = topbar('<button class="tb-btn primary" id="newSt">+ Aluno</button><button class="tb-btn" id="acct">Conta</button>') +
       '<div class="wrap t-head"><p class="eyebrow">Voice Your English · Teacher</p><h1>Hi, <em>Sarah</em>!</h1><p class="lede">Seus alunos e tudo o que eles enviaram pelo app, em tempo real.</p></div>' +
-      installHTML() + '<div id="bdAgenda"></div>' +
+      installHTML() + '<div id="bdAgenda"><section class="t-sec wrap bd-agenda"><div class="bd-h"><h2>Agenda</h2><a class="tb-btn primary" href="#/controle">Controle de aulas →</a></div><div class="empty-t">Carregando agenda e aulas sem registro…</div></section></div>' +
       '<div class="wrap t-grid" style="padding-top:16px"><section class="t-sec"><h2>Novidades <span class="badge" id="nb" hidden></span></h2><div class="feed" id="feed"><div class="empty-t">Carregando…</div></div></section>' +
       '<section class="t-sec"><h2>Alunos</h2><div class="st-list" id="sts"><div class="empty-t">Carregando…</div></div></section></div>';
     document.getElementById("acct").onclick = accountModal;
@@ -283,14 +283,18 @@
     var ib = document.getElementById("installBtn"); if (ib) ib.onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; ib.hidden = true; } };
     loadStudents().then(loadFeed);
     timers.push(setInterval(loadFeed, 30000));
-    loadBoard().then(function (B) { var el = document.getElementById("bdAgenda"); if (el && B) el.innerHTML = window.VYEBoard.agenda(B); });
+    loadBoard().then(function (B) {
+      var el = document.getElementById("bdAgenda"); if (!el) return;
+      if (B) el.innerHTML = window.VYEBoard.agenda(B);
+      else el.querySelector(".empty-t").innerHTML = "Não consegui carregar a agenda" + (loadBoard.err ? " (" + esc(loadBoard.err) + ")" : "") + ". Feche e abra o app de novo; se continuar, mande um print para o Claude.";
+    });
   }
 
   /* ---------- Teacher board (agenda + controle de aulas) ---------- */
   var board = null, bdFiltro = "Todos";
   function loadBoard() {
     return sb.from("teacher_board").select("data").eq("id", 1).maybeSingle().then(function (r) {
-      if (r.error || !r.data) return board;
+      if (r.error || !r.data) { loadBoard.err = r.error ? r.error.message : "sem dados"; return board; }
       board = r.data.data; return board;
     });
   }
