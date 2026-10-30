@@ -121,7 +121,7 @@ function resHTML(){
  return'<section aria-labelledby="h-res"><h2 id="h-res">Pratique em casa</h2>'+body+add+'</section>';
 }
 
-var ABS={pendente:{l:"A repor",c:"var(--warm)"},agendada:{l:"Reposição agendada",c:"var(--accent)"},reposta:{l:"Reposta",c:"var(--ok)"},sem:{l:"Sem reposição",c:"var(--muted)"}};
+var ABS={pendente:{l:"A repor",c:"var(--warm)"},agendada:{l:"Reposição agendada",c:"var(--accent)"},reposta:{l:"Reposta",c:"var(--ok)"},sem:{l:"Sem reposição",c:"var(--muted)"},confirmar:{l:"A confirmar",c:"var(--muted)"}};
 var PAY={pago:{l:"Pago",c:"var(--ok)"},pendente:{l:"Pendente",c:"var(--warm)"},atrasado:{l:"Atrasado",c:"var(--c-vocab)"}};
 var MONF=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
 function br(iso){var p=String(iso||"").split("-");return p.length<3?"":p[2]+"/"+p[1]}
@@ -131,7 +131,7 @@ function absHTML(){
  var A=(D.absences||[]).slice().sort(function(a,b){return a.date<b.date?1:-1});
  var nP=A.filter(function(a){return a.status==="pendente"}).length,nA=A.filter(function(a){return a.status==="agendada"}).length,nR=A.filter(function(a){return a.status==="reposta"}).length;
  var rows=A.length?A.map(function(a){var s=ABS[a.status]||ABS.pendente;
-  return'<div class="row"><div class="main"><b>Falta em '+esc(br(a.date))+'</b><small>'+esc(a.reason||"")+(a.makeup?' · reposição '+esc(br(a.makeup)):(a.status==="pendente"?' · a combinar':''))+'</small></div>'+
+  return'<div class="row"><div class="main"><b>'+(a.status==="confirmar"?'Aula de ':'Falta em ')+esc(br(a.date))+'</b><small>'+esc(a.reason||"")+(a.makeup?' · reposição '+esc(br(a.makeup)):(a.status==="pendente"?' · a combinar':a.status==="confirmar"?' · a teacher vai confirmar se a aula aconteceu':''))+'</small></div>'+
   (editing?sel("data-abs",a.id,ABS,a.status)+xBtn("absences",a.id):'<span class="st" style="--st:'+s.c+'">'+s.l+'</span>')+'</div>'}).join(""):'<p class="note-sm">Nenhuma falta registrada.</p>';
  var add=editing?'<form class="add" data-add="absences" style="margin-top:0"><label class="note-sm" style="display:flex;flex-direction:column;gap:4px">Dia da falta<input type="date" name="date" id="a-adate" required></label><label class="note-sm" style="display:flex;flex-direction:column;gap:4px">Reposição (se já marcada)<input type="date" name="makeup" id="a-amake"></label><input name="reason" id="a-areason" placeholder="Motivo (ex.: remarcada pelo aluno)"><select name="status" id="a-astatus" aria-label="Status"><option value="pendente">A repor</option><option value="agendada">Reposição agendada</option><option value="reposta">Reposta</option><option value="sem">Sem reposição</option></select><button class="btn primary" type="submit">Registrar falta</button></form>':'';
  return'<section class="ccard" aria-labelledby="h-abs"><h2 id="h-abs">Controle de aulas</h2><div class="stats">'+

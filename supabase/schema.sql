@@ -86,3 +86,16 @@ create table if not exists public.teacher_board(
 alter table public.teacher_board enable row level security;
 drop policy if exists board_teacher on public.teacher_board;
 create policy board_teacher on public.teacher_board for all using (public.is_teacher()) with check (public.is_teacher());
+
+-- Teacher decisions on classes with no recording (synced to the sheet by the nightly job)
+create table if not exists public.class_events(
+  id uuid primary key default gen_random_uuid(),
+  student_key text not null,
+  class_date date not null,
+  action text not null check (action in ('falta_avisou','falta_sem_aviso','aula_sem_gravacao')),
+  topic text,
+  created_at timestamptz not null default now(),
+  synced boolean not null default false);
+alter table public.class_events enable row level security;
+drop policy if exists events_teacher on public.class_events;
+create policy events_teacher on public.class_events for all using (public.is_teacher()) with check (public.is_teacher());

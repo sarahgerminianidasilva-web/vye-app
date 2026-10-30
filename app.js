@@ -304,6 +304,62 @@
       window.scrollTo(0, 0);
     });
   }
+  /* Decide what happened in a class with no recording / notes */
+  var DEC = { fj: ["falta_avisou", "Falta (avisou)", "Reposição a combinar"], fi: ["falta_sem_aviso", "Falta sem aviso", ""], p: ["aula_sem_gravacao", "", "Aula sem gravação · registrada pela teacher"] };
+  function applyDecision(sid, date, code, topic) {
+    var B = board, s = (B.A || []).filter(function (x) { return x.id === sid; })[0]; if (!s) return Promise.reject(new Error("aluno"));
+    var row = [date, code === "p" ? topic : DEC[code][1], code, DEC[code][2]];
+    var lists = [s.aulas || [], (B.HIST || {})[sid] || []], done = false;
+    lists.forEach(function (L) { L.forEach(function (a, i) { if (!done && a[0] === date) { L[i] = row; done = true; } }); });
+    if (!done) { s.aulas = (s.aulas || []).concat([row]).sort(function (x, y) { return x[0] < y[0] ? -1 : 1; }); }
+    if (code === "fj") s.repos = (s.repos || 0) + 1;
+    if (code === "p" && topic) s.licao = topic;
+    return sb.from("teacher_board").update({ data: B, updated_at: new Date().toISOString() }).eq("id", 1).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.from("class_events").insert({ student_key: sid, class_date: date, action: DEC[code][0], topic: topic || null });
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      var first = String(s.nome || "").split(/[ &]/)[0].toLowerCase();
+      return sb.from("students").select("id,name,data").then(function (q) {
+        var st = (q.data || []).filter(function (x) { return String(x.name || "").toLowerCase().split(" ")[0] === first; })[0];
+        if (!st) return;
+        var d = st.data || {};
+        d.absences = (d.absences || []).filter(function (x) { return !(x.date === date && x.status === "confirmar"); });
+        if (code === "p") {
+          d.lessons = [{ id: "m" + date.replace(/-/g, ""), date: date, title: topic, note: "Aula sem gravação" }].concat((d.lessons || []).filter(function (x) { return x.date !== date; }));
+        } else {
+          d.absences.push({ id: "a" + date.replace(/-/g, ""), date: date, reason: code === "fj" ? "Falta avisada" : "Falta sem aviso", makeup: "", status: code === "fj" ? "pendente" : "sem" });
+        }
+        return sb.from("students").update({ data: d }).eq("id", st.id);
+      });
+    });
+  }
+  function rerenderBoard() {
+    var ag = document.getElementById("bdAgenda"); if (ag && board) ag.innerHTML = window.VYEBoard.agenda(board);
+    var pg = root.querySelector(".bd-page"); if (pg && board) { var m = location.hash.match(/^#\/controle\/([a-z0-9-]+)$/); pg.innerHTML = m ? window.VYEBoard.student(board, m[1]) : window.VYEBoard.control(board, bdFiltro); }
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-dec]"); if (!b || !board || !me.teacher) return;
+    var sid = b.dataset.sid, date = b.dataset.date, code = b.dataset.dec, br = date.split("-").reverse().join("/");
+    var go = function (topic, close) {
+      b.disabled = true;
+      applyDecision(sid, date, code, topic).then(function () {
+        if (close) close();
+        toast(code === "p" ? "Aula de " + br + " registrada ✓" : "Falta de " + br + " registrada ✓");
+        rerenderBoard();
+      }).catch(function () { b.disabled = false; toast("Não deu para salvar. Confira a internet e tente de novo."); loadBoard().then(rerenderBoard); });
+    };
+    if (code !== "p") return go("");
+    modal('<h2>Aula de ' + esc(br) + '</h2><p>O que foi dado nessa aula? Uma linha basta. Ela entra no app, na planilha e na página do aluno como aula dada.</p>' +
+      '<label class="field">Conteúdo da aula<input id="dtopic" placeholder="Ex.: Lesson 13 · don\'t / doesn\'t"></label>' +
+      '<div class="modal-acts"><button class="tb-btn" type="button" data-close>Cancelar</button><button class="tb-btn primary" type="button" id="dsave">Registrar aula</button></div>',
+      function (w, close) {
+        w.querySelector("#dsave").onclick = function () {
+          var t = w.querySelector("#dtopic").value.trim(); if (!t) { toast("Escreva o conteúdo da aula."); return; }
+          this.disabled = true; go(t, close);
+        };
+      });
+  });
   document.addEventListener("click", function (e) {
     var f = e.target.closest && e.target.closest("[data-bdf]"); if (!f || !board) return;
     bdFiltro = f.dataset.bdf; root.querySelector(".bd-page").innerHTML = window.VYEBoard.control(board, bdFiltro);

@@ -146,3 +146,10 @@ body{min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-botto
 .bd-mes summary b::before{content:"▸ ";color:var(--muted)}
 .bd-mes[open] summary b::before{content:"▾ "}
 .bd-mes summary span{color:var(--muted);font-size:.86rem}
+.bd-pend{background:color-mix(in srgb,var(--warm) 7%,transparent)}
+.bd-help{margin:0 0 6px;font-size:.84rem;color:var(--muted)}
+.bd-dec{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bd-db{font:inherit;font-size:.8rem;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.bd-db:hover{border-color:var(--accent)}
+.bd-db.ok{background:color-mix(in srgb,var(--ok) 14%,var(--surface));border-color:color-mix(in srgb,var(--ok) 40%,transparent);color:var(--ok)}
+.bd-db:disabled{opacity:.5;cursor:default}
