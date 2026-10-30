@@ -121,7 +121,8 @@
   function route() {
     clearTimers();
     var m = location.hash.match(/^#\/aluno\/([0-9a-f-]{36})$/);
-    if (me.teacher) return m ? openStudent(m[1]) : teacherHome();
+    var c = location.hash.match(/^#\/controle(?:\/([a-z0-9-]+))?$/);
+    if (me.teacher) return m ? openStudent(m[1]) : c ? boardPage(c[1]) : teacherHome();
     openMine();
   }
 
@@ -274,7 +275,7 @@
     document.title = "Teacher · Voice Your English";
     root.innerHTML = topbar('<button class="tb-btn primary" id="newSt">+ Aluno</button><button class="tb-btn" id="acct">Conta</button>') +
       '<div class="wrap t-head"><p class="eyebrow">Voice Your English · Teacher</p><h1>Hi, <em>Sarah</em>!</h1><p class="lede">Seus alunos e tudo o que eles enviaram pelo app, em tempo real.</p></div>' +
-      installHTML() +
+      installHTML() + '<div id="bdAgenda"></div>' +
       '<div class="wrap t-grid" style="padding-top:16px"><section class="t-sec"><h2>Novidades <span class="badge" id="nb" hidden></span></h2><div class="feed" id="feed"><div class="empty-t">Carregando…</div></div></section>' +
       '<section class="t-sec"><h2>Alunos</h2><div class="st-list" id="sts"><div class="empty-t">Carregando…</div></div></section></div>';
     document.getElementById("acct").onclick = accountModal;
@@ -282,7 +283,31 @@
     var ib = document.getElementById("installBtn"); if (ib) ib.onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; ib.hidden = true; } };
     loadStudents().then(loadFeed);
     timers.push(setInterval(loadFeed, 30000));
+    loadBoard().then(function (B) { var el = document.getElementById("bdAgenda"); if (el && B) el.innerHTML = window.VYEBoard.agenda(B); });
   }
+
+  /* ---------- Teacher board (agenda + controle de aulas) ---------- */
+  var board = null, bdFiltro = "Todos";
+  function loadBoard() {
+    return sb.from("teacher_board").select("data").eq("id", 1).maybeSingle().then(function (r) {
+      if (r.error || !r.data) return board;
+      board = r.data.data; return board;
+    });
+  }
+  function boardPage(id) {
+    current = null;
+    document.title = "Controle de aulas · Voice Your English";
+    root.innerHTML = topbar('<a class="tb-btn" href="#">Início</a>') + '<div class="wrap" style="padding-block:40px"><div class="empty-t">Carregando…</div></div>';
+    (board ? Promise.resolve(board) : loadBoard()).then(function (B) {
+      if (!B) { root.innerHTML = topbar('<a class="tb-btn" href="#">Início</a>') + '<div class="wrap" style="padding-block:40px"><div class="empty-t">Não consegui carregar o controle de aulas. Confira a internet e tente de novo.</div></div>'; return; }
+      root.innerHTML = topbar('<a class="tb-btn" href="#">Início</a>') + '<div class="bd-page">' + (id ? window.VYEBoard.student(B, id) : window.VYEBoard.control(B, bdFiltro)) + '</div>';
+      window.scrollTo(0, 0);
+    });
+  }
+  document.addEventListener("click", function (e) {
+    var f = e.target.closest && e.target.closest("[data-bdf]"); if (!f || !board) return;
+    bdFiltro = f.dataset.bdf; root.querySelector(".bd-page").innerHTML = window.VYEBoard.control(board, bdFiltro);
+  });
   var stCache = {};
   function loadStudents() {
     return sb.from("students").select("id,name,email,active,data,updated_at").order("name").then(function (r) {

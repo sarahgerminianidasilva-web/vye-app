@@ -77,3 +77,12 @@ create policy receipts_read on storage.objects for select to authenticated
 drop policy if exists materials_write on storage.objects;
 create policy materials_write on storage.objects for insert to authenticated
   with check (bucket_id='materials' and public.is_teacher());
+
+-- Teacher board (agenda + controle de aulas), teacher-only
+create table if not exists public.teacher_board(
+  id int primary key default 1 check (id = 1),
+  data jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now());
+alter table public.teacher_board enable row level security;
+drop policy if exists board_teacher on public.teacher_board;
+create policy board_teacher on public.teacher_board for all using (public.is_teacher()) with check (public.is_teacher());
