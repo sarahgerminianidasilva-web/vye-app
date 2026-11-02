@@ -103,11 +103,36 @@
       });
   }
 
+  function passwordPrompt() {
+    var done = false;
+    var mark = function () { if (done) return; done = true; me.meta = me.meta || {}; me.meta.pwPrompted = true; sb.auth.updateUser({ data: { pwPrompted: true } }); };
+    var closeM = modal('<h2>Boas-vindas ao app! 👋</h2>' +
+      '<p>Você entrou com a senha inicial, que é a mesma para todos os alunos. Se quiser, crie agora uma senha só sua.</p>' +
+      '<label class="field">Nova senha<input id="pp" type="password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres"></label>' +
+      '<p class="note-sm" style="margin:0">Pode trocar depois também: é só tocar em <b>Conta</b>, no canto de cima.</p>' +
+      '<div class="modal-acts"><button class="tb-btn" type="button" id="pskip">Agora não</button><button class="tb-btn primary" type="button" id="psave">Trocar senha</button></div>',
+      function (w, close) {
+        w.querySelector("#pskip").onclick = function () { mark(); close(); };
+        w.querySelector("#psave").onclick = function () {
+          var v = w.querySelector("#pp").value, btn = this;
+          if (v.length < 6) { toast("A senha precisa ter pelo menos 6 caracteres."); return; }
+          btn.disabled = true;
+          sb.auth.updateUser({ password: v, data: { pwPrompted: true } }).then(function (r) {
+            btn.disabled = false;
+            if (r.error) { toast("Não deu para trocar. Tente outra senha."); return; }
+            done = true; me.meta = me.meta || {}; me.meta.pwPrompted = true; close(); toast("Senha trocada ✓");
+          });
+        };
+      });
+    return closeM;
+  }
+
   function boot() {
     sb.auth.getSession().then(function (r) {
       var s = r.data && r.data.session;
       if (!s) return showLogin();
       me.email = (s.user.email || "").toLowerCase();
+      me.meta = s.user.user_metadata || {};
       sb.rpc("is_teacher").then(function (t) { me.teacher = !!(t && t.data === true); route(); });
     });
   }
@@ -172,6 +197,7 @@
         '<div id="app"></div>';
       var out = document.getElementById("out"); if (out) out.onclick = logout;
       var ac = document.getElementById("acct"); if (ac) ac.onclick = accountModal;
+      if (!teacherView && !(me.meta && me.meta.pwPrompted)) setTimeout(passwordPrompt, 600);
       var ib = document.getElementById("installBtn"); if (ib) ib.onclick = function () { if (installEvt) { installEvt.prompt(); installEvt = null; ib.hidden = true; } };
       var ctx = {
         data: fixData(JSON.parse(JSON.stringify(st.data || {}))),
