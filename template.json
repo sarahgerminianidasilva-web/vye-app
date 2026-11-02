@@ -329,7 +329,10 @@
    "video": "https://www.youtube.com/results?search_query=present+simple+negative+don%27t+doesn%27t+english+beginners"
   }
  ],
- "links": {},
+ "links": {
+  "trilha": "https://claude.ai/artifact/6rQqkjPn9uMm5cxU45HRwv",
+  "hub": "https://claude.ai/code/artifact/2767b979-30af-4019-8685-d2631c4085d0"
+ },
  "homework": [],
  "payments": [],
  "recordings": [],
@@ -350,5 +353,77 @@
    "note": "O livro do curso em PDF, com todas as lições."
   }
  ],
- "recCount": "0"
+ "recCount": "0",
+ "units2": [
+  {
+   "id": "s2u1",
+   "url": "https://docs.google.com/presentation/d/1-TQezaArvI8fbSpC6yugmFLd0Tb2mGbKXshs2SqKg6A/edit",
+   "note": "Meses, datas e números ordinais",
+   "title": "When is your birthday?",
+   "status": "todo"
+  },
+  {
+   "id": "s2u2",
+   "url": "https://docs.google.com/presentation/d/11M7NZCcgFkdSQ_AK4DyG8r2kxjtOwtxWmnRogqw0heM/edit",
+   "note": "Números, preços e dias da semana",
+   "title": "Dates, numbers and days of the week",
+   "status": "todo"
+  },
+  {
+   "id": "s2u3",
+   "url": "https://docs.google.com/presentation/d/1uroxa-4870_0Uj7RzB3pBsPWiZdpG11r_idvo1IFl1w/edit",
+   "note": "Comparativos",
+   "title": "Is it easier than English?",
+   "status": "todo"
+  },
+  {
+   "id": "s2u4",
+   "url": "https://docs.google.com/presentation/d/1p91PG0FvFCn6ib9infzRu3RdPSjNYO1mHTNMrRs4e9E/edit",
+   "note": "Preposições de lugar, móveis e cômodos",
+   "title": "It's on the wall behind the sofa",
+   "status": "todo"
+  },
+  {
+   "id": "s2u5",
+   "url": "https://docs.google.com/presentation/d/1nusTUAl04aI0fqXrsMsSYST0dptk6jG2B_KLrP4HstY/edit",
+   "note": "A / an, some, any e comidas",
+   "title": "What's your favourite food?",
+   "status": "todo"
+  },
+  {
+   "id": "s2u6",
+   "url": "https://docs.google.com/presentation/d/1waXsMZq5LOU9whBgXD7YF6Eb6FKJTBVhmsVwqaL2hOM/edit",
+   "note": "No café: pedidos e preços",
+   "title": "Good food for good mood",
+   "status": "todo"
+  },
+  {
+   "id": "s2u7",
+   "url": "https://docs.google.com/presentation/d/13-mtjE-ob_7VvMRJz8B8spxGv0STMWmBIHZJN-cWuEM/edit",
+   "note": "Lugares na cidade e no bairro",
+   "title": "In my neighbourhood",
+   "status": "todo"
+  },
+  {
+   "id": "s2u8",
+   "url": "https://docs.google.com/presentation/d/1zjsjmOhiZbeOv1NNS18MsfLTVI58uDDS3bssbjFnweQ/edit",
+   "note": "Transporte e frequência",
+   "title": "Do you often take the bus to work?",
+   "status": "todo"
+  },
+  {
+   "id": "s2u9",
+   "url": "https://docs.google.com/presentation/d/13eMEKGkfvSUDJXM8jY-meTy5v6ORT4ZrK3uf2r3q3TQ/edit",
+   "note": "Was / were e matérias da escola",
+   "title": "Were your school days fun?",
+   "status": "todo"
+  },
+  {
+   "id": "s2u10",
+   "url": "https://docs.google.com/presentation/d/1gGZwwVETRvmstKVzCcxrkTqTjwVFUypwBuB2vSDdhRc/edit",
+   "note": "Past simple: verbos regulares",
+   "title": "I watched a film yesterday",
+   "status": "todo"
+  }
+ ]
 }

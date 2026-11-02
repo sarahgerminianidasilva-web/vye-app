@@ -7,7 +7,7 @@ App web instalável (PWA) para alunos e para a teacher.
 
 ## Arquivos
 - `index.html`, `app.js`, `app.css`: casca do app (login, área da teacher, envios).
-- `panel.js`, `panel.css`: painel do aluno, gerado de `claudinei-dashboard.html` por `build/make_panel.py`.
+- `panel.js`, `panel.css`: painel do aluno, gerados do painel do artifact por `build/make_panel.py` (rode `python3 build/make_panel.py <painel.html>` depois de mudar o painel e suba os dois arquivos).
 - `template.json`: dados iniciais de um aluno novo.
 - `config.js`: URL e chave pública (anon) do Supabase.
 - `supabase/schema.sql`: tabelas, regras de acesso (RLS) e armazenamento.

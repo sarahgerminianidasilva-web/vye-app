@@ -187,3 +187,6 @@ body{min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-botto
 .cal-leg i.fer{border:1px solid var(--line)}
 .cal i.ho::after{content:"";position:absolute;top:1px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--warm)}
 .cal-leg i.ho{border:1px solid var(--line)}
+
+/* Abas do painel ficam logo abaixo da barra do app */
+#app .mtabs{top:calc(55px + env(safe-area-inset-top,0px))}
