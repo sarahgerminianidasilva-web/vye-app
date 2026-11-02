@@ -140,13 +140,14 @@ function br(iso){var p=String(iso||"").split("-");return p.length<3?"":p[2]+"/"+
 function monLabel(ym){var p=String(ym||"").split("-");return p.length<2?ym:(MONF[+p[1]-1]||"").replace(/^./,function(c){return c.toUpperCase()})+" "+p[0]}
 function sel(attr,id,opts,cur){return'<select '+attr+'="'+esc(id)+'" aria-label="Status">'+Object.keys(opts).map(function(k){return'<option value="'+k+'"'+(k===cur?" selected":"")+'>'+opts[k].l+'</option>'}).join("")+'</select>'}
 function absHTML(){
+ var hid=D.showMakeups===false;if(hid&&!canEdit)return"";
  var A=(D.absences||[]).slice().sort(function(a,b){return a.date<b.date?1:-1});
  var nP=A.filter(function(a){return a.status==="pendente"}).length,nA=A.filter(function(a){return a.status==="agendada"}).length,nR=A.filter(function(a){return a.status==="reposta"}).length;
  var rows=A.length?A.map(function(a){var s=ABS[a.status]||ABS.pendente;
   return'<div class="row"><div class="main"><b>'+(a.status==="confirmar"?'Aula de ':'Falta em ')+esc(br(a.date))+'</b><small>'+esc(a.reason||"")+(a.makeup?' · reposição '+esc(br(a.makeup)):(a.status==="pendente"?' · a combinar':a.status==="confirmar"?' · a teacher vai confirmar se a aula aconteceu':''))+'</small></div>'+
   (editing?sel("data-abs",a.id,ABS,a.status)+xBtn("absences",a.id):'<span class="st" style="--st:'+s.c+'">'+s.l+'</span>')+'</div>'}).join(""):'<p class="note-sm">Nenhuma falta registrada.</p>';
  var add=editing?'<form class="add" data-add="absences" style="margin-top:0"><label class="note-sm" style="display:flex;flex-direction:column;gap:4px">Dia da falta<input type="date" name="date" id="a-adate" required></label><label class="note-sm" style="display:flex;flex-direction:column;gap:4px">Reposição (se já marcada)<input type="date" name="makeup" id="a-amake"></label><input name="reason" id="a-areason" placeholder="Motivo (ex.: remarcada pelo aluno)"><select name="status" id="a-astatus" aria-label="Status"><option value="pendente">A repor</option><option value="agendada">Reposição agendada</option><option value="reposta">Reposta</option><option value="sem">Sem reposição</option></select><button class="btn primary" type="submit">Registrar falta</button></form>':'';
- return'<section class="ccard" aria-labelledby="h-abs"><h2 id="h-abs">Controle de aulas</h2><div class="stats">'+
+ return'<section class="ccard" aria-labelledby="h-abs"><h2 id="h-abs">Controle de aulas</h2>'+(canEdit?'<p class="note-sm" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 8px">'+(hid?'🔒 Oculto para o aluno.':'👁️ O aluno vê esta parte.')+' <button class="btn" type="button" data-absshow="1">'+(hid?'Mostrar ao aluno':'Ocultar do aluno')+'</button></p>':'')+'<div class="stats">'+
  '<div class="stat" style="--st:var(--warm)"><b>'+nP+'</b><span>'+(nP===1?"aula a repor":"aulas a repor")+'</span></div>'+
  '<div class="stat" style="--st:var(--accent)"><b>'+nA+'</b><span>'+(nA===1?"agendada":"agendadas")+'</span></div>'+
  '<div class="stat" style="--st:var(--ok)"><b>'+nR+'</b><span>'+(nR===1?"reposta":"repostas")+'</span></div></div>'+
@@ -698,6 +699,7 @@ app.addEventListener("click",function(e){
  if(b.id==="recMore"){recAll=!recAll;render();if(!recAll){var h=document.getElementById("h-rec");if(h)h.scrollIntoView({block:"start"})}return}
  if(b.id==="clearTasks"){D.tasks=[];mark();render();return}
  if(b.id==="toggleEdit"){editing=!editing;render();return}
+ if(b.dataset.absshow){D.showMakeups=D.showMakeups===false;mark();render();return}
  if(b.id==="publish"&&artifactNs){
   b.disabled=true;var st=document.getElementById("status");if(st)st.textContent="Publicando...";
   try{SS.setItem(ctx.draftKey,JSON.stringify(D))}catch(err){}
