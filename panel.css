@@ -594,6 +594,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .trl-bar i{display:block;height:100%;border-radius:99px;background:var(--warm)}
 .trl-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.88rem;font-weight:700}
 .trl-acts{display:flex;gap:8px;flex-wrap:wrap}
+.trl-btn{display:block;text-align:center;font-weight:800;font-size:1.05rem;text-decoration:none;padding:14px 16px;border-radius:14px;background:var(--warm);color:var(--warm-ink)}
+.trl-btn:hover{filter:brightness(1.05)}
+.trl-note{margin:-4px 0 0;font-size:.86rem;text-align:center;opacity:.85}
 .trl-full{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none;box-shadow:0 10px 24px -14px color-mix(in srgb,var(--ink) 60%,transparent)}
 .trl-full:hover{outline:3px solid var(--warm);outline-offset:2px}
 .trl-full .di{flex:0 0 auto;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--warm);color:var(--warm-ink)}

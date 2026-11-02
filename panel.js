@@ -480,12 +480,10 @@ function headerHTML(){
 function lessonHw(l){var HW=D.homework||[],lk="h"+String(l.date).replace(/-/g,"");return HW.filter(function(h){return h.lesson===l.id||h.id===lk})[0]||HW.slice().sort(function(a,b){return(a.sent||"")<(b.sent||"")?1:(a.sent||"")>(b.sent||"")?-1:(a.id<b.id?1:-1)})[0]}
 function hwIsDone(h){if(!h)return true;if(done[h.id])return true;return!!(h.ex&&h.ex.length&&hwSt(h).i>=h.ex.length)}
 function trlStats(){var U=D.units||[],U2=D.units2||[],cu=nowUnit(),s1=U.length&&U.every(function(u){return u.status==="done"}),in2=cu?U2.indexOf(cu.u)>=0:(s1&&U2.length>0),L=in2?U2:U,nd=L.filter(function(u){return u.status==="done"}).length;return{n:L.length,done:nd,cu:cu,sem:in2?"Semestre 2":"Semestre 1",pct:L.length?Math.round(nd/L.length*100):0}}
-function trlHeroHTML(){var t=trlStats(),cu=t.cu,base=((D.links||{}).trilha||"").replace(/#.*$/,"");
- return'<section class="wrap"><div class="trl-hero"><p class="eyebrow">Sua trilha · '+esc(t.sem)+'</p><h2>'+(cu?'Agora: Lesson '+cu.n+' · '+esc(cu.u.title):'Seu caminho no curso')+'</h2>'+(cu&&cu.u.note?'<p>'+esc(cu.u.note)+'</p>':'')+
- '<div><div class="trl-meta"><span>'+t.done+' de '+t.n+' lições do '+esc(t.sem)+'</span><span>'+t.pct+'%</span></div><div class="trl-bar"><i style="width:'+t.pct+'%"></i></div></div>'+
- '<p style="font-size:.92rem">Em cada lição: slides da aula, videoaula, listening e exercícios que se corrigem na hora. Use para revisar, recuperar uma aula que perdeu ou adiantar a próxima.</p>'+
- (base?'<a class="trl-full" href="'+esc(base)+'" target="_blank" rel="noopener"><span class="di" aria-hidden="true">'+svg("path")+'</span><span class="t"><b>Abrir a trilha completa</b><small>'+trlTotal()+' lições · Semestres 1 e 2 · slides, vídeos, listening e exercícios</small></span><span class="go" aria-hidden="true">↗</span></a>':'')+
- (cu&&cu.url3?'<div class="trl-acts"><a class="go1" href="'+esc(cu.url3)+'" target="_blank" rel="noopener">Estudar a Lesson '+cu.n+' ↗</a></div>':'')+'</div></section>'}
+function trlHeroHTML(){var t=trlStats(),cu=t.cu,base=((D.links||{}).trilha||"").replace(/#.*$/,""),href=cu&&cu.url3?cu.url3:base;
+ return'<section class="wrap"><div class="trl-hero"><p class="eyebrow">Trilha do curso · '+esc(t.sem)+'</p><h2>'+(cu?'Você está na Lesson '+cu.n+'<br>'+esc(cu.u.title):'Seu caminho no curso')+'</h2>'+
+ '<div><div class="trl-meta"><span>'+t.done+' de '+t.n+' lições feitas</span><span>'+t.pct+'%</span></div><div class="trl-bar"><i style="width:'+t.pct+'%"></i></div></div>'+
+ (href?'<a class="trl-btn" href="'+esc(href)+'" target="_blank" rel="noopener">Abrir a trilha completa ↗</a><p class="trl-note">Todas as lições do curso, com slides, vídeo, listening e exercícios.</p>':'')+'</div></section>'}
 function trlTotal(){return(D.units||[]).length+(D.units2||[]).length}
 function trlMiniHTML(){var t=trlStats(),cu=t.cu;if(!t.n)return"";
  return'<button type="button" class="trl-mini" data-gotrilha="1"><span class="di" aria-hidden="true">'+svg("path")+'</span><span class="t"><b>Sua trilha · '+t.done+' de '+t.n+' lições do '+esc(t.sem)+'</b><small>'+(cu?'Agora: Lesson '+cu.n+' · '+esc(cu.u.title):'Veja todas as lições do curso')+'</small><span class="bar"><i style="width:'+t.pct+'%"></i></span></span><span class="go" aria-hidden="true">›</span></button>'}
@@ -526,9 +524,8 @@ function praticarHTML(){
  if(pracView==="ai")return'<div class="wrap narrow">'+back+chatHTML()+'</div>';
  if(pracView==="extras")return'<div class="wrap narrow">'+back+'<div style="padding-top:14px">'+vidHTML()+'</div></div>';
  var T=fcToday().length,hub=(D.links||{}).hub;
- var trb=((D.links||{}).trilha||"").replace(/#.*$/,"");
  return'<div class="wrap narrow doors"><div><h2>Mais prática</h2><p class="note-sm">Tudo aqui é opcional. Use quando sobrar um tempinho.</p></div>'+
- (trb?'<a class="door trl" href="'+esc(trb)+'" target="_blank" rel="noopener"><span class="di" aria-hidden="true">'+svg("path")+'</span><span class="dt"><b>Trilha completa</b><small>'+trlTotal()+' lições do curso, cada uma com slides, videoaula, listening e exercícios</small></span><span class="go" aria-hidden="true">↗</span></a>':'')+
+
  '<button type="button" class="door" data-pview="fc"><span class="di" aria-hidden="true">'+svg("cards")+'</span><span class="dt"><b>Flashcards</b><small>'+(T?T+(T===1?' card para hoje':' cards para hoje'):'Tudo revisado por hoje ✓')+' · para memorizar as palavras</small></span><span class="go" aria-hidden="true">›</span></button>'+
  '<button type="button" class="door ai" data-pview="ai"><span class="di" aria-hidden="true">'+svg("chat")+'</span><span class="dt"><b>Converse com a IA</b><small>Conversa, role-play e treino da lição, até por voz</small></span><span class="go" aria-hidden="true">›</span></button>'+
  (hub?'<a class="door hub" href="'+esc(safeUrl(hub))+'" target="_blank" rel="noopener"><span class="di" aria-hidden="true">'+svg("globe")+'</span><span class="dt"><b>Practice Hub</b><small>Mais de 50 atividades: séries, música, podcasts, leitura, viagem e trabalho</small></span><span class="go" aria-hidden="true">↗</span></a>':'')+((D.videos||[]).length||(D.prompts||[]).length?'<button type="button" class="door ext" data-pview="extras"><span class="di" aria-hidden="true">'+svg("audio")+'</span><span class="dt"><b>Do tema atual</b><small>'+(D.studyTheme?esc(D.studyTheme)+' · ':'')+'vídeos, listening, leituras, podcasts e comandos de IA</small></span><span class="go" aria-hidden="true">›</span></button>':'')+'</div>'}
