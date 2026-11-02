@@ -92,4 +92,9 @@ tail = ('\nctx.api={render:function(){render()},\n'
         '}};\n')
 (root / "panel.js").write_text(head + js + tail, encoding="utf-8")
 (root / "panel.css").write_text(css.strip() + "\n", encoding="utf-8")
+# stamp index.html so phones load the new files right away
+import time as _t
+ix = root / "index.html"; h = ix.read_text(encoding="utf-8"); v = _t.strftime("%Y%m%d%H%M")
+h = re.sub(r'(href|src)="(panel\.css|app\.css|config\.js|panel\.js|cal\.js|board\.js|app\.js)(\?v=\d+)?"', lambda m: '%s="%s?v=%s"' % (m.group(1), m.group(2), v), h)
+ix.write_text(h, encoding="utf-8")
 print("panel.js e panel.css gerados")
