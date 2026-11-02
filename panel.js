@@ -504,11 +504,14 @@ function todayHTML(){
  '<ol class="steps">'+step1+step2+step3+'</ol>'+trlMiniHTML()+(stepsLeft()===0?'<button type="button" class="done-more" data-mtab="praticar"><span><b>Terminou tudo! 🎉</b><small>Quer praticar mais? Flashcards, IA e Practice Hub.</small></span><span aria-hidden="true">→</span></button>':'')+'<div class="lls">'+links+'</div></section>'+streakLineHTML()+
  (others?'<p class="wrap narrow more-hw">'+(others===1?'Você tem 1 lição anterior em aberto.':'Você tem '+others+' lições anteriores em aberto.')+' <button type="button" class="linkbtn" data-atab="licoes">Ver</button></p>':'')}
 function streakLineHTML(){
- var st=stats(),t=new Date(),cells="";
+ var st=stats(),t=new Date(),cells="",C=D.challenges||[];
+ var idx=C.length?Math.floor(new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime()/864e5)%C.length:0,ch=C.length?C[idx].text:"Estude 5 minutos de inglês hoje.";
  for(var i=6;i>=0;i--){var d=addDays(t,-i),k=ymd(d),on=!!streak[k];cells+='<span class="sd'+(on?' on':'')+(i===0?' now':'')+'" title="'+esc(br(k))+'"><i>'+"DSTQQSS"[d.getDay()]+'</i></span>'}
- return'<div class="wrap narrow"><div class="sline"><span class="sl-n"><b>'+st.cur+'</b>'+(st.cur===1?' dia seguido':' dias seguidos')+'</span><div class="sweek" aria-label="Últimos 7 dias">'+cells+'</div>'+
- (st.done?'<span class="sl-ok">Hoje conta ✓ <button type="button" class="linkbtn" id="dcCopy">copiar progresso</button></span>':'<button type="button" class="linkbtn" id="dcOther" aria-expanded="'+otherOpen+'">Estudei de outro jeito</button>')+'</div>'+
- (otherOpen&&!st.done?'<div class="dc-chips" style="margin-top:8px">'+OTHERS.map(function(o){return'<button type="button" class="tab" data-other="'+esc(o)+'">'+esc(o)+'</button>'}).join("")+'</div>':'')+'<p class="note-sm" id="dcMsg" hidden></p></div>'}
+ var act=st.done?'<div class="dch-ok"><b>✓ Hoje já conta!</b> <span>'+esc(streak[st.today]==="challenge"?"Você fez o desafio.":"Você estudou: "+String(streak[st.today]).toLowerCase()+".")+'</span><span class="dch-l"><button type="button" class="linkbtn" id="dcCopy">copiar progresso</button> · <button type="button" class="linkbtn" id="dcUndo">desfazer</button></span></div>':
+  '<div class="dch-acts"><button type="button" class="btn primary" id="dcDo">✓ Fiz o desafio</button><button type="button" class="btn" id="dcOther" aria-expanded="'+otherOpen+'">Estudei de outro jeito</button></div>'+
+  (otherOpen?'<div class="dc-chips">'+OTHERS.map(function(o){return'<button type="button" class="tab" data-other="'+esc(o)+'">'+esc(o)+'</button>'}).join("")+'</div>':'');
+ return'<div class="wrap narrow"><section class="dch" aria-labelledby="h-dch"><div class="dch-top"><div><p class="dch-k">Desafio do dia · 5 minutos</p><h3 id="h-dch">'+esc(ch)+'</h3></div><div class="dch-n"><b>'+st.cur+'</b><span>'+(st.cur===1?'dia seguido':'dias seguidos')+'</span></div></div>'+act+
+ '<div class="sweek" aria-label="Últimos 7 dias">'+cells+'</div><p class="note-sm" id="dcMsg" hidden></p></section></div>'}
 function quickChipsHTML(){
  var L=D.links||{},items=[{k:"folder",t:"Materiais",u:L.materials},{k:"rec",t:"Pasta de gravações",u:L.recordings},{k:"note",t:"Digital Notebook",u:L.notebook},{k:"path",t:"Trilha A1",u:L.trilha}].concat((D.resources||[]).filter(function(r){return!r.why&&r.url}).slice(0,1).map(function(r){return{k:"read",t:"Livro do curso",u:r.url}})).filter(function(x){return x.u});
  return'<nav class="qchips wrap" aria-label="Atalhos">'+items.map(function(x){return'<a class="qc" href="'+esc(safeUrl(x.u))+'" target="_blank" rel="noopener">'+svg(x.k)+esc(x.t)+'</a>'}).join("")+'</nav>'}
@@ -643,9 +646,9 @@ app.addEventListener("click",function(e){
  if(b.dataset.fcplus){pracView="fc";fcSess=null;fcForm={en:b.dataset.fcplus,pt:"",pr:"",ex:""};fcAddMsg="Escreva o que significa e toque em Salvar.";goTab("praticar",function(){var p=document.getElementById("fc-pt");if(p){p.scrollIntoView({block:"center"});p.focus({preventScroll:true})}});return}
  if(b.dataset.hwgo){var hg=b.dataset.hwgo;hwOpen[hg]=true;render();var hr=document.getElementById("hw-"+hg);if(hr&&hr.closest(".hw"))hr.closest(".hw").scrollIntoView({block:"start",behavior:"smooth"});return}
  if(b.dataset.del){D[b.dataset.del]=(D[b.dataset.del]||[]).filter(function(x){return x.id!==b.dataset.id});mark();render();return}
- if(b.id==="dcDo"){streak[stats().today]="challenge";otherOpen=false;saveStreak();render();return}
+ if(b.id==="dcDo"){streak[stats().today]="challenge";otherOpen=false;saveStreak();render();alertMsg("Boa! Hoje já conta na sua sequência 🎉");return}
  if(b.id==="dcOther"){otherOpen=!otherOpen;render();return}
- if(b.dataset.other){streak[stats().today]=b.dataset.other;otherOpen=false;saveStreak();render();return}
+ if(b.dataset.other){streak[stats().today]=b.dataset.other;otherOpen=false;saveStreak();render();alertMsg("Boa! Hoje já conta na sua sequência 🎉");return}
  if(b.id==="dcUndo"){delete streak[stats().today];saveStreak();render();return}
  if(b.id==="payTell"){var n0=new Date(),mes=MONF[n0.getMonth()]+"/"+n0.getFullYear(),nm0=(D.student&&D.student.name)||"";
   var ptxt="Oi, teacher! Aqui é "+(nm0||"seu aluno")+". Já paguei a mensalidade de "+mes+". Segue o comprovante 👇";
