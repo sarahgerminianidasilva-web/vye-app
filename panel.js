@@ -469,7 +469,7 @@ function streakHTML(){
  '<div class="sweek" aria-label="Últimos 7 dias">'+cells+'</div>'+today2+
  '<div class="dc-foot"><span>'+st.total+(st.total===1?" dia":" dias")+' no total · melhor: '+st.best+'</span><button class="btn small" type="button" id="dcCopy">Copiar meu progresso</button></div><p class="note-sm" id="dcMsg" hidden></p></section>'}
 // ---------- versão foco ----------
-var aulasTab="aulas",moreOpen=false,deckOpen=false;
+var aulasTab="trilha",moreOpen=false,deckOpen=false;
 function headerHTML(){
  var s=D.student||{},n=nextClass(),when;
  if(!n)when="Horário a combinar";
@@ -479,6 +479,14 @@ function headerHTML(){
  '<div class="nextbar'+(n&&n.live?' live':'')+'"><span class="nb-t"><span class="nb-k">'+(n&&n.live?'Aula ao vivo':'Próxima aula')+'</span><b>'+esc(when)+'</b></span>'+(s.meet?'<a class="join" href="'+esc(safeUrl(s.meet))+'" target="_blank" rel="noopener">Entrar</a>':'')+'</div></header>'}
 function lessonHw(l){var HW=D.homework||[],lk="h"+String(l.date).replace(/-/g,"");return HW.filter(function(h){return h.lesson===l.id||h.id===lk})[0]||HW.slice().sort(function(a,b){return(a.sent||"")<(b.sent||"")?1:(a.sent||"")>(b.sent||"")?-1:(a.id<b.id?1:-1)})[0]}
 function hwIsDone(h){if(!h)return true;if(done[h.id])return true;return!!(h.ex&&h.ex.length&&hwSt(h).i>=h.ex.length)}
+function trlStats(){var U=D.units||[],U2=D.units2||[],cu=nowUnit(),s1=U.length&&U.every(function(u){return u.status==="done"}),in2=cu?U2.indexOf(cu.u)>=0:(s1&&U2.length>0),L=in2?U2:U,nd=L.filter(function(u){return u.status==="done"}).length;return{n:L.length,done:nd,cu:cu,sem:in2?"Semestre 2":"Semestre 1",pct:L.length?Math.round(nd/L.length*100):0}}
+function trlHeroHTML(){var t=trlStats(),cu=t.cu,base=((D.links||{}).trilha||"").replace(/#.*$/,"");
+ return'<section class="wrap"><div class="trl-hero"><p class="eyebrow">Sua trilha · '+esc(t.sem)+'</p><h2>'+(cu?'Agora: Lesson '+cu.n+' · '+esc(cu.u.title):'Seu caminho no curso')+'</h2>'+(cu&&cu.u.note?'<p>'+esc(cu.u.note)+'</p>':'')+
+ '<div><div class="trl-meta"><span>'+t.done+' de '+t.n+' lições do '+esc(t.sem)+'</span><span>'+t.pct+'%</span></div><div class="trl-bar"><i style="width:'+t.pct+'%"></i></div></div>'+
+ '<p style="font-size:.92rem">Em cada lição: slides da aula, videoaula, listening e exercícios que se corrigem na hora. Use para revisar, recuperar uma aula que perdeu ou adiantar a próxima.</p>'+
+ '<div class="trl-acts">'+(cu&&cu.url3?'<a class="go1" href="'+esc(cu.url3)+'" target="_blank" rel="noopener">Estudar a Lesson '+cu.n+' ↗</a>':'')+(base?'<a class="go2" href="'+esc(base)+'" target="_blank" rel="noopener">Abrir a trilha completa ↗</a>':'')+'</div></div></section>'}
+function trlMiniHTML(){var t=trlStats(),cu=t.cu;if(!t.n)return"";
+ return'<button type="button" class="trl-mini" data-gotrilha="1"><span class="di" aria-hidden="true">'+svg("path")+'</span><span class="t"><b>Sua trilha · '+t.done+' de '+t.n+' lições do '+esc(t.sem)+'</b><small>'+(cu?'Agora: Lesson '+cu.n+' · '+esc(cu.u.title):'Veja todas as lições do curso')+'</small><span class="bar"><i style="width:'+t.pct+'%"></i></span></span><span class="go" aria-hidden="true">›</span></button>'}
 function nowUnit(){var lists=[["units","s1"],["units2","s2"]];for(var k=0;k<lists.length;k++){var U=D[lists[k][0]]||[];for(var i=0;i<U.length;i++)if(U[i].status==="now")return{u:U[i],n:i+1,url3:trilhaUrl(lists[k][1],i+1)}}return null}
 function stepsLeft(){var l=lastLesson();if(!l)return 0;return(fcToday().length?1:0)+(hwIsDone(lessonHw(l))?0:1)}
 function todayHTML(){
@@ -493,7 +501,7 @@ function todayHTML(){
  var links=(l.rec?'<a class="la" href="'+esc(safeUrl(l.rec))+'" target="_blank" rel="noopener">▶ Gravação</a>':'')+'<button type="button" class="la" data-seeles="'+esc(l.id)+'">Vocabulário e frases</button>'+(l.notes?'<a class="la" href="'+esc(safeUrl(l.notes))+'" target="_blank" rel="noopener">Resumo do Gemini</a>':'');
  var others=(D.homework||[]).filter(function(h){return h!==H&&!hwIsDone(h)}).length;
  return'<section class="wrap narrow today" aria-labelledby="h-today"><p class="eyebrow">Depois da aula · '+esc(longDate(l.date))+'</p><h2 id="h-today">'+esc(l.title)+'</h2>'+(l.sum?'<p class="today-sum">'+esc(l.sum)+'</p>':'')+
- '<ol class="steps">'+step1+step2+step3+'</ol>'+(stepsLeft()===0?'<button type="button" class="done-more" data-mtab="praticar"><span><b>Terminou tudo! 🎉</b><small>Quer praticar mais? Flashcards, IA e Practice Hub.</small></span><span aria-hidden="true">→</span></button>':'')+'<div class="lls">'+links+'</div></section>'+streakLineHTML()+
+ '<ol class="steps">'+step1+step2+step3+'</ol>'+trlMiniHTML()+(stepsLeft()===0?'<button type="button" class="done-more" data-mtab="praticar"><span><b>Terminou tudo! 🎉</b><small>Quer praticar mais? Flashcards, IA e Practice Hub.</small></span><span aria-hidden="true">→</span></button>':'')+'<div class="lls">'+links+'</div></section>'+streakLineHTML()+
  (others?'<p class="wrap narrow more-hw">'+(others===1?'Você tem 1 lição anterior em aberto.':'Você tem '+others+' lições anteriores em aberto.')+' <button type="button" class="linkbtn" data-atab="licoes">Ver</button></p>':'')}
 function streakLineHTML(){
  var st=stats(),t=new Date(),cells="";
@@ -505,9 +513,9 @@ function quickChipsHTML(){
  var L=D.links||{},items=[{k:"folder",t:"Materiais",u:L.materials},{k:"rec",t:"Pasta de gravações",u:L.recordings},{k:"note",t:"Digital Notebook",u:L.notebook},{k:"path",t:"Trilha A1",u:L.trilha}].concat((D.resources||[]).filter(function(r){return!r.why&&r.url}).slice(0,1).map(function(r){return{k:"read",t:"Livro do curso",u:r.url}})).filter(function(x){return x.u});
  return'<nav class="qchips wrap" aria-label="Atalhos">'+items.map(function(x){return'<a class="qc" href="'+esc(safeUrl(x.u))+'" target="_blank" rel="noopener">'+svg(x.k)+esc(x.t)+'</a>'}).join("")+'</nav>'}
 function aulasHTML(){
- var T=[["aulas","Aulas"],["licoes","Lições de casa"],["trilha","Trilha e progresso"],["gravacoes","Gravações"]];
+ var T=[["trilha","Trilha"],["aulas","Aulas"],["licoes","Lições de casa"],["gravacoes","Gravações"]];
  var seg='<div class="wrap"><div class="seg" role="tablist">'+T.map(function(x){return'<button type="button" role="tab" data-atab="'+x[0]+'" aria-selected="'+(aulasTab===x[0])+'">'+x[1]+'</button>'}).join("")+'</div></div>';
- var body=aulasTab==="licoes"?'<div class="wrap seg-body">'+hwHTML()+'</div>':aulasTab==="trilha"?progHTML()+'<div class="wrap seg-body" style="padding-top:16px">'+pathHTML()+'</div>':aulasTab==="gravacoes"?'<div class="wrap seg-body">'+recHTML()+'</div>':'<div class="wrap seg-body">'+lessonsHTML()+'</div>';
+ var body=aulasTab==="licoes"?'<div class="wrap seg-body">'+hwHTML()+'</div>':aulasTab==="trilha"?trlHeroHTML()+'<div class="wrap seg-body" style="padding-top:18px">'+pathHTML()+'</div>'+progHTML():aulasTab==="gravacoes"?'<div class="wrap seg-body">'+recHTML()+'</div>':'<div class="wrap seg-body">'+lessonsHTML()+'</div>';
  return seg+body+'<div class="wrap"><details class="files"><summary>Arquivos do curso ▾</summary>'+quickChipsHTML()+'</details></div>'}
 var pracView="";
 function praticarHTML(){
@@ -612,6 +620,7 @@ app.addEventListener("click",function(e){
  if(hd){done[hd.dataset.hwdone]=1;markStudy("Lição de casa");try{LS.setItem("cl-done",JSON.stringify(done))}catch(err){}setTimeout(render,400);return}
  var b=e.target.closest("button");if(!b)return;
  if(b.id==="tourOpen"){tourGo(0);return}
+ if(b.dataset.gotrilha){aulasTab="trilha";goTab("aulas");window.scrollTo({top:0});return}
  if(b.dataset.mtab){if(b.dataset.mtab==="praticar")pracView="";goTab(b.dataset.mtab);return}
  if(b.dataset.pview!==undefined){pracView=b.dataset.pview;fcSess=pracView==="fc"?fcSess:fcSess;render();window.scrollTo({top:0});return}
  if(b.dataset.rcadd){rcptFor=b.dataset.rcadd;var rf=document.getElementById("rcptFile");if(rf){rf.value="";rf.click()}return}
@@ -778,8 +787,8 @@ var tourI=-1;
 function tourSteps(){var nm=(D.student&&D.student.name)||"",hasTr=!!(D.links||{}).trilha;return[
  {tab:"hoje",sel:".nextbar",k:"Bem-vindo",h:"Oi"+(nm?", "+nm:"")+"! Este é o seu painel de inglês.",p:"Tudo o que acontece entre uma aula e outra fica aqui. No topo você vê a próxima aula. Na hora, é só tocar em Entrar.",w:"ter o curso inteiro num lugar só, sem procurar link no WhatsApp."},
  {tab:"hoje",sel:".steps",k:"Hoje · o essencial",h:"O que fazer depois de cada aula",p:"Aqui ficam só os passos obrigatórios da última aula: revisar os flashcards, fazer a lição de casa"+(hasTr?" e estudar a lição na Trilha":"")+". Quando terminar, aparece o convite para praticar mais.",w:"fixar o conteúdo enquanto ele está fresco. Uns 10 minutos por dia valem mais que 1 hora na véspera."},
- {tab:"aulas",atab:"aulas",sel:".seg",k:"Curso · consulta",h:"O registro de cada aula",p:"Toque numa aula para ver o resumo, o vocabulário com áudio e as frases que você montou. Também ficam aqui as lições de casa, as gravações e, no fim, os arquivos do curso.",w:"rever qualquer aula, ouvir de novo a pronúncia e não perder nada."},
- {tab:"aulas",atab:"trilha",sel:"#h-path",k:"Curso · Trilha",h:"A Trilha: o caminho do livro, lição por lição",p:"Mostra todas as lições do curso, as que você já fez e a atual."+(hasTr?" O botão Estudar abre a página da lição com slides, videoaula, listening e exercícios que se corrigem na hora.":"")+" Em Meu Progresso você marca o que já consegue fazer em inglês.",w:"ver onde você está no curso, revisar uma lição antiga, recuperar a aula que perdeu ou adiantar a próxima."},
+ {tab:"aulas",atab:"trilha",sel:".trl-hero",k:"Curso · Trilha",h:"A Trilha: o caminho do livro, lição por lição",p:"Mostra a lição em que você está, quantas já fez e todas as lições do curso. O botão Estudar abre a lição com slides, videoaula, listening e exercícios que se corrigem na hora. Ela também aparece na aba Hoje.",w:"revisar uma lição antiga, recuperar a aula que perdeu ou adiantar a próxima, no seu ritmo."},
+ {tab:"aulas",atab:"aulas",sel:".seg",k:"Curso · aulas e gravações",h:"O registro de cada aula",p:"Toque numa aula para ver o resumo, o vocabulário com áudio e as frases que você montou. Também ficam aqui as lições de casa, as gravações e, no fim, os arquivos do curso.",w:"rever qualquer aula, ouvir de novo a pronúncia e não perder nada."},
  {tab:"praticar",pv:"",sel:".doors",k:"Mais prática · opcional",h:"Três portas para quando sobrar tempo",p:"Flashcards: as palavras das aulas viram cartões que voltam no dia certo, e você pode criar os seus. Converse com a IA: conversa, role-play e treino da lição, com correção em português e até por voz. Practice Hub: mais de 50 atividades com séries, música, podcasts, leitura e viagem.",w:"ir além da lição. Nada aqui é obrigatório: escolha o que combina com você."},
  {tab:"plano",sel:"#h-pay",k:"Meu plano",h:"Suas aulas e a mensalidade",p:"Aqui ficam as faltas, as reposições e os pagamentos de cada mês. Pagou? Toque em Já paguei e envie o comprovante.",w:"acompanhar tudo do contrato sem precisar perguntar."},
  {tab:"hoje",sel:"",k:"Última dica",h:"Deixe o painel na tela do celular",list:["iPhone (Safari): toque em Compartilhar e depois em Adicionar à Tela de Início.","Android (Chrome): toque nos 3 pontinhos e depois em Adicionar à tela inicial."],p:"Assim ele abre como um app. Para rever este tour, toque em Como usar o painel, no fim da página."}]}
