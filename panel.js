@@ -554,7 +554,7 @@ function render(){
  if(mainTab==="hoje")body=todayHTML();
  else if(mainTab==="praticar")body=praticarHTML();
  else if(mainTab==="aulas")body=aulasHTML();
- else body='<div class="wrap"><div class="control plan-tab">'+payHTML()+absHTML()+'</div>'+(window.VYECal?window.VYECal.html({days:(D.student||{}).days,year:2027,semFeriado:!!(D.student||{}).semFeriado}):'')+'</div>';
+ else body='<div class="wrap"><div class="control plan-tab">'+payHTML()+absHTML()+'</div>'+(window.VYECal?window.VYECal.html({days:(D.student||{}).days,year:2027,semFeriado:!!(D.student||{}).semFeriado,time:(D.student||{}).time,name:(D.student||{}).name,local:(D.student||{}).feriadosLocais}):'')+'</div>';
  var html=(canEdit?'<div class="wrap ownerbar"><span class="note-sm">Só você, a teacher, vê este botão.</span><button class="btn" id="toggleEdit" type="button">'+(editing?"Ver como aluno":"Editar dashboard")+'</button></div>':'')+
  (D.banner?'<div class="wrap" style="padding-top:16px"><img class="banner" src="'+esc(D.banner)+'" alt="Voice Your English · English Course"></div>':'')+headerHTML()+bdayHTML()+editHeadHTML()+tabsNavHTML()+'<div class="tabbody">'+body+'</div>'+
  (editing?'<div class="wrap"><div class="savebar"><span class="status" id="status">'+(dirty?'Você tem alterações não publicadas.':'Tudo publicado. O aluno vê exatamente esta página.')+'</span><button class="btn primary" id="publish" type="button"'+(dirty?'':' disabled')+'>Publicar alterações</button></div></div>':'')+

@@ -187,6 +187,12 @@ body{min-height:100vh;min-height:100dvh;padding-bottom:env(safe-area-inset-botto
 .cal-leg i.fer{border:1px solid var(--line)}
 .cal i.ho::after{content:"";position:absolute;top:1px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--warm)}
 .cal-leg i.ho{border:1px solid var(--line)}
+.cal i.repo{background:#ffd84a;color:#3a2e00;font-weight:700}
+.cal i.hl::after{background:#7c3aed}
+.cal-mh em.rp{color:#9a6b00}
+.cal-k .rk{background:#fff3c4;border-color:#f0d36b}.cal-k .rk span{color:#5c4a00}.cal-k .rk b{color:#3a2e00}
+.cal-act{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 12px}.cal-act small{color:var(--muted);flex:1 1 200px}
+.cal-hols{margin-top:12px;font-size:.85rem}.cal-hols ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:3px}.cal-hols li span{display:inline-block;min-width:44px;font-variant-numeric:tabular-nums;color:var(--muted)}.cal-hols li.on{font-weight:700}.cal-hols small{font-weight:400;color:var(--muted)}
 
 /* Abas do painel ficam logo abaixo da barra do app */
 #app .mtabs{top:calc(55px + env(safe-area-inset-top,0px))}
