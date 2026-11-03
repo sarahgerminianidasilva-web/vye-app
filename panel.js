@@ -540,12 +540,14 @@ function editHeadHTML(){
  var dayChk=[1,2,3,4,5,6].map(function(d){return'<label style="flex-direction:row;align-items:center;gap:4px"><input type="checkbox" data-day="'+d+'"'+((s.days||[]).indexOf(d)>=0?" checked":"")+' style="width:auto">'+DOW[d].slice(0,3)+'</label>'}).join("");
  function f(id,lab,val,ph){return'<label>'+lab+'<input id="'+id+'" value="'+esc(val||"")+'"'+(ph?' placeholder="'+ph+'"':'')+'></label>'}
  return'<div class="wrap"><div class="edit-head">'+
- f("e-name","Nome do aluno",s.name)+f("e-email","E-mail do aluno (lembretes)",s.email,"nome@email.com")+f("e-level","Nível",s.level)+f("e-time","Horário (HH:MM)",s.time,"18:00")+f("e-meet","Link da aula (Meet)",s.meet)+
+ f("e-name","Nome do aluno",s.name)+f("e-email","E-mail do aluno (lembretes)",s.email,"nome@email.com")+f("e-level","Nível",s.level)+f("e-time","Horário (HH:MM)",s.time,"18:00")+f("e-meet","Link da aula (Meet)",s.meet)+f("e-bday","Aniversário (DD/MM)",s.birthday,"25/12")+
  '<label>Dias de aula<span style="display:flex;gap:10px;flex-wrap:wrap;padding-top:6px">'+dayChk+'</span></label>'+
  f("e-mat","Pasta de materiais",L.materials)+f("e-rec","Pasta de gravações",L.recordings)+f("e-reccount","Nº de aulas gravadas",D.recCount)+f("e-nb","Digital Notebook",L.notebook)+
  '</div></div>';
 }
 
+function bdayHTML(){var b=String((D.student||{}).birthday||"").match(/^\s*(\d{1,2})\s*[\/.-]\s*(\d{1,2})/);if(!b)return"";var n=new Date();if(+b[1]!==n.getDate()||+b[2]!==n.getMonth()+1)return"";var nm=(D.student||{}).name||"";
+ return'<div class="wrap" style="padding-top:16px"><section class="ccard bday" style="text-align:center;padding:22px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 18%,transparent),color-mix(in srgb,var(--warm) 18%,transparent))"><div style="font-size:40px;line-height:1">🎂🎉🎈</div><h2 style="margin:10px 0 6px">Happy birthday, '+esc(nm)+'!</h2><p style="margin:0">Feliz aniversário! A teacher Sarah e toda a Voice Your English desejam um ano incrível, cheio de conquistas, alegrias e muito inglês. 💙</p><p class="note-sm" style="margin:10px 0 0">Many happy returns! 🥳</p></section></div>'}
 function render(){
  var body;
  if(mainTab==="hoje")body=todayHTML();
@@ -553,7 +555,7 @@ function render(){
  else if(mainTab==="aulas")body=aulasHTML();
  else body='<div class="wrap"><div class="control plan-tab">'+payHTML()+absHTML()+'</div>'+(window.VYECal?window.VYECal.html({days:(D.student||{}).days,year:2027,semFeriado:!!(D.student||{}).semFeriado}):'')+'</div>';
  var html=(canEdit?'<div class="wrap ownerbar"><span class="note-sm">Só você, a teacher, vê este botão.</span><button class="btn" id="toggleEdit" type="button">'+(editing?"Ver como aluno":"Editar dashboard")+'</button></div>':'')+
- (D.banner?'<div class="wrap" style="padding-top:16px"><img class="banner" src="'+esc(D.banner)+'" alt="Voice Your English · English Course"></div>':'')+headerHTML()+editHeadHTML()+tabsNavHTML()+'<div class="tabbody">'+body+'</div>'+
+ (D.banner?'<div class="wrap" style="padding-top:16px"><img class="banner" src="'+esc(D.banner)+'" alt="Voice Your English · English Course"></div>':'')+headerHTML()+bdayHTML()+editHeadHTML()+tabsNavHTML()+'<div class="tabbody">'+body+'</div>'+
  (editing?'<div class="wrap"><div class="savebar"><span class="status" id="status">'+(dirty?'Você tem alterações não publicadas.':'Tudo publicado. O aluno vê exatamente esta página.')+'</span><button class="btn primary" id="publish" type="button"'+(dirty?'':' disabled')+'>Publicar alterações</button></div></div>':'')+
  '<footer class="wrap"><button type="button" class="linkbtn" id="tourOpen">Como usar o painel</button> · Dúvida ou link quebrado? Me chama no grupo do WhatsApp.</footer>';
  document.getElementById("app").innerHTML=html;
@@ -583,7 +585,7 @@ app.addEventListener("change",function(e){
  if(t.id==="e-reccount"){D.recCount=t.value.trim();mark();render();return}
  if(t.id==="e-payday"){D.payDay=t.value.trim();mark();render();return}
  if(t.dataset.day){var d=+t.dataset.day,ds=(D.student.days||[]).filter(function(x){return x!==d});if(t.checked)ds.push(d);ds.sort();D.student.days=ds;mark();render();return}
- var map={"e-name":["student","name"],"e-email":["student","email"],"e-level":["student","level"],"e-time":["student","time"],"e-meet":["student","meet"],"e-mat":["links","materials"],"e-rec":["links","recordings"],"e-nb":["links","notebook"]};
+ var map={"e-name":["student","name"],"e-email":["student","email"],"e-level":["student","level"],"e-time":["student","time"],"e-meet":["student","meet"],"e-bday":["student","birthday"],"e-mat":["links","materials"],"e-rec":["links","recordings"],"e-nb":["links","notebook"]};
  if(map[t.id]){var k=map[t.id];D[k[0]]=D[k[0]]||{};D[k[0]][k[1]]=t.value.trim();mark();render()}
 });
 app.addEventListener("input",function(e){var t=e.target;if(fcForm&&/^fc-(en|pt|pr|ex)$/.test(t.id)){fcForm[t.id.slice(3)]=t.value}if(t.dataset&&t.dataset.xin)xTxt[t.dataset.xin]=t.value;if(t.dataset.win)wVal[t.dataset.win]=t.value;if(t.id==="w-free")freeTxt=t.value});

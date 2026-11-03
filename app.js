@@ -395,6 +395,15 @@
     bdFiltro = f.dataset.bdf; root.querySelector(".bd-page").innerHTML = window.VYEBoard.control(board, bdFiltro);
   });
   var stCache = {};
+  function bdayTag(d) {
+    var b = String(((d || {}).student || {}).birthday || "").match(/^\s*(\d{1,2})\s*[\/.-]\s*(\d{1,2})/); if (!b) return "";
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var t = new Date(now.getFullYear(), +b[2] - 1, +b[1]); if (t < now) t.setFullYear(t.getFullYear() + 1);
+    var days = Math.round((t - now) / 86400000);
+    if (days === 0) return ' <span class="pill-s">🎂 aniversário hoje</span>';
+    if (days <= 7) return ' <span class="pill-s">🎂 em ' + days + (days === 1 ? " dia" : " dias") + '</span>';
+    return "";
+  }
   function loadStudents() {
     return sb.from("students").select("id,name,email,active,data,updated_at").order("name").then(function (r) {
       var el = document.getElementById("sts"); if (!el) return;
@@ -403,7 +412,7 @@
       if (!L.length) { el.innerHTML = '<div class="empty-t">Nenhum aluno ainda. Toque em <b>+ Aluno</b> para cadastrar.</div>'; return; }
       el.innerHTML = L.map(function (s) {
         var d = s.data || {}, last = (d.lessons || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; })[0];
-        return '<div class="st-card"><span class="st-av" aria-hidden="true">' + esc(initials(s.name)) + '</span><div class="st-main"><b>' + esc(s.name) + payState(d) + (s.active ? "" : ' <span class="pill-s warn">inativo</span>') + '</b>' +
+        return '<div class="st-card"><span class="st-av" aria-hidden="true">' + esc(initials(s.name)) + '</span><div class="st-main"><b>' + esc(s.name) + bdayTag(d) + payState(d) + (s.active ? "" : ' <span class="pill-s warn">inativo</span>') + '</b>' +
           '<small>' + esc((d.student && d.student.level) || "") + (last ? ' · última aula ' + esc(last.date.slice(8, 10) + "/" + last.date.slice(5, 7)) : "") + ' · ' + esc(s.email) + '</small></div>' +
           '<div class="st-acts"><a class="tb-btn primary" href="#/aluno/' + s.id + '">Abrir</a><button class="tb-btn" data-invite="' + s.id + '">Acesso</button></div></div>';
       }).join("");
