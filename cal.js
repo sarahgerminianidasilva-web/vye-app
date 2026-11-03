@@ -7,7 +7,7 @@
   var CFG = {
     2027: {
       ferias: [
-        { de: "2026-12-14", ate: "2027-01-10", nome: "Férias de fim de ano", volta: "2027-01-11" },
+        { de: "2026-12-19", ate: "2027-01-10", nome: "Férias de fim de ano", volta: "2027-01-11" },
         { de: "2027-12-20", ate: "2028-01-09", nome: "Férias de fim de ano" }
       ],
       feriados: {

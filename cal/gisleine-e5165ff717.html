@@ -19,7 +19,7 @@
   --repo-ink: #3a2e00;
   --pause: #e2e6f0;
   --pause-stripe: #cfd5e5;
-  --hol: #f08c00;
+  --hol: #f2b600;
   --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
 }
@@ -27,13 +27,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0f1220; --surface: #171b2c; --ink: #e8ebf6; --muted: #9ba4c0; --line: #2a3049;
     --accent: #8299ff; --accent-soft: #232c55; --repo: #e9c53d; --repo-ink: #2a2100;
-    --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ffa94d; color-scheme: dark;
+    --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ffd43b; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0f1220; --surface: #171b2c; --ink: #e8ebf6; --muted: #9ba4c0; --line: #2a3049;
   --accent: #8299ff; --accent-soft: #232c55; --repo: #e9c53d; --repo-ink: #2a2100;
-  --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ffa94d; color-scheme: dark;
+  --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ffd43b; color-scheme: dark;
 }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
 .wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
@@ -111,7 +111,7 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background:
 
 body.student .admin-only { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .chip { transition: background .15s, border-color .15s; } }
-@media print { .copy { display:none !important } .panel, .strip { break-inside: avoid } .month { break-inside: avoid } }
+@media print { .copy { display:none !important } }
 </style>
 
 <div class="wrap">
@@ -123,8 +123,8 @@ body.student .admin-only { display: none !important; }
   </header>
 
   <div class="strip" aria-label="Datas da pausa">
-    <div><span class="eyebrow">Última semana de aulas</span><span class="big">7 a 12/12</span></div>
-    <div class="mid"><span class="eyebrow">Pausa</span><span class="big">14/12 a 10/01</span></div>
+    <div><span class="eyebrow">Última semana de aulas</span><span class="big">14 a 18/12</span></div>
+    <div class="mid"><span class="eyebrow">Pausa</span><span class="big">19/12 a 10/01</span></div>
     <div class="back"><span class="eyebrow">Volta às aulas</span><span class="big">11/01/2027</span></div>
   </div>
 
@@ -185,7 +185,7 @@ const HOLIDAYS = {
   "2027-11-02": "Finados", "2027-11-15": "Proclamação da República", "2027-11-20": "Consciência Negra",
   "2027-12-25": "Natal"
 };
-const PAUSE_START = new Date(2026, 11, 14), PAUSE_END = new Date(2027, 0, 10);
+const PAUSE_START = new Date(2026, 11, 19), PAUSE_END = new Date(2027, 0, 10);
 const RETURN_DAY = new Date(2027, 0, 11), YEAR_END = new Date(2027, 11, 17), NEXT_BREAK = new Date(2027, 11, 20);
 const WD_SHORT = ["D", "S", "T", "Q", "Q", "S", "S"];
 const WD_PLURAL = ["domingos", "segundas", "terças", "quartas", "quintas", "sextas", "sábados"];
@@ -285,7 +285,7 @@ function message(st, s) {
   return "Oi, " + st.name + "! 💙\n\n" +
     "Passando pra avisar sobre as férias de fim de ano:\n\n" +
     "• Última aula de 2026: " + fmtLong(s.lastBefore) + "\n" +
-    "• Pausa: de 14/12 a 10/01\n" +
+    "• Pausa: de 19/12 a 10/01\n" +
     "• Volta: " + fmtLong(s.firstAfter) + "\n\n" +
     "Durante a pausa vou deixar atividades extras no app (opcionais) pra você manter o ritmo.\n\n" +
     "As " + s.lost.length + " aulas que caem nas férias são repostas em 2027 nos meses que têm 5 " + dias + ". As suas reposições ficam em: " + joinPt(s.repo.map(fmt)) + ".\n\n" +
