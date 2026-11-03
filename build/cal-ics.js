@@ -1,4 +1,4 @@
-/* Gera cal/<calToken>.ics para cada aluno (link do Google Agenda no app).
+/* Gera cal/<calToken>.ics para cada aluno (não usado no app hoje).
    Uso: node build/cal-ics.js alunos.json   — alunos.json: [[nome, calToken, [dias], "HH:MM", {feriadosLocais}?], ...] */
 const fs = require("fs"), path = require("path");
 global.window = {}; global.document = { addEventListener() {} };

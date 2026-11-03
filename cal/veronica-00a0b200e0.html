@@ -1,0 +1,356 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body class="student">
+<title>Inglês 2027 · Verônica</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: agenda escolar — faixa da pausa no topo, depois o ano do aluno em 12 mini-meses, marca-texto amarelo para reposição */
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --ink: #17203b;
+  --muted: #5a6382;
+  --line: #dde2ef;
+  --accent: #2c4bd0;
+  --accent-soft: #e3e8fd;
+  --repo: #ffd84a;
+  --repo-ink: #3a2e00;
+  --pause: #e2e6f0;
+  --pause-stripe: #cfd5e5;
+  --hol: #d23f58;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1220; --surface: #171b2c; --ink: #e8ebf6; --muted: #9ba4c0; --line: #2a3049;
+    --accent: #8299ff; --accent-soft: #232c55; --repo: #e9c53d; --repo-ink: #2a2100;
+    --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ff7c8f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1220; --surface: #171b2c; --ink: #e8ebf6; --muted: #9ba4c0; --line: #2a3049;
+  --accent: #8299ff; --accent-soft: #232c55; --repo: #e9c53d; --repo-ink: #2a2100;
+  --pause: #1f2437; --pause-stripe: #2b3149; --hol: #ff7c8f; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(30px, 6vw, 46px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 22px; font-weight: 800; }
+h3 { font-size: 15px; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; }
+header { display: grid; gap: 10px; }
+.muted { color: var(--muted); }
+
+/* faixa de datas da pausa */
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.strip > div { padding: 14px 16px; display: grid; gap: 2px; border-left: 1px solid var(--line); }
+.strip > div:first-child { border-left: 0; }
+.strip .big { font-family: var(--font-display); font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums; }
+.strip .mid { background: repeating-linear-gradient(135deg, var(--pause) 0 8px, var(--pause-stripe) 8px 16px); }
+.strip .back .big { color: var(--accent); }
+@media (max-width: 560px) { .strip { grid-template-columns: 1fr; } .strip > div { border-left: 0; border-top: 1px solid var(--line); } .strip > div:first-child { border-top: 0; } }
+
+section { display: grid; gap: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 16px; }
+
+/* mini-meses */
+.months { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px 20px; }
+.months.two { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.month { display: grid; gap: 6px; min-width: 0; }
+.month h3 { text-transform: capitalize; }
+.grid7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-variant-numeric: tabular-nums; }
+.grid7 .wd { font-size: 11px; color: var(--muted); text-align: center; font-weight: 700; padding-bottom: 2px; }
+.day { position: relative; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; font-size: 12.5px; border-radius: 6px; color: var(--muted); }
+.day.empty { visibility: hidden; }
+.day.inpause { background: repeating-linear-gradient(135deg, var(--pause) 0 5px, var(--pause-stripe) 5px 10px); border-radius: 0; color: var(--ink); }
+.day.offnext { background: var(--pause); border-radius: 0; }
+.day.class { color: var(--accent); font-weight: 700; box-shadow: inset 0 0 0 2px var(--accent); background: var(--accent-soft); }
+.day.repo { background: var(--repo); color: var(--repo-ink); font-weight: 700; }
+.day.lost { color: var(--ink); font-weight: 700; text-decoration: line-through; text-decoration-thickness: 2px; }
+.day.ret { background: var(--accent); color: var(--surface); font-weight: 700; }
+.day.hol::after { content: ""; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--hol); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 16px; height: 16px; border-radius: 4px; display: inline-block; flex: none; }
+.sw.class { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
+.sw.repo { background: var(--repo); }
+.sw.pause { background: repeating-linear-gradient(135deg, var(--pause) 0 4px, var(--pause-stripe) 4px 8px); }
+.sw.hol { width: 7px; height: 7px; border-radius: 50%; background: var(--hol); margin: 0 4px; }
+
+/* seletor de alunos */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 700; }
+.chip:focus-visible, .copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.head-student { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: baseline; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.stats > div { padding: 12px 14px; border-left: 1px solid var(--line); display: grid; gap: 2px; }
+.stats > div:first-child { border-left: 0; }
+.stats .n { font-family: var(--font-display); font-weight: 800; font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1; }
+.stats .repo-n { background: var(--repo); color: var(--repo-ink); }
+.stats .repo-n .muted { color: var(--repo-ink); opacity: .8; }
+.stats .lbl { font-size: 13px; }
+.dates { font-size: 14px; display: grid; gap: 6px; }
+.dates b { font-variant-numeric: tabular-nums; }
+
+.msg { white-space: pre-wrap; background: var(--bg); border: 1px dashed var(--line); border-radius: 10px; padding: 14px; font-size: 14px; max-width: 70ch; }
+.copy { justify-self: start; font: inherit; font-weight: 700; font-size: 14px; background: var(--ink); color: var(--surface); border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; }
+.note { font-size: 13px; color: var(--muted); }
+a.copy { text-decoration: none; display: inline-block; }
+.cal-box { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.cal-box .note { flex: 1 1 220px; }
+code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--accent-soft); padding: 1px 6px; border-radius: 5px; }
+
+body.student .admin-only { display: none; }
+@media (prefers-reduced-motion: no-preference) { .chip { transition: background .15s, border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Voice Your English · calendário 2027</div>
+    <h1 id="title">Férias e calendário 2027</h1>
+    <p class="muted" id="intro">As aulas param uma semana antes do Natal e voltam no dia 11 de janeiro. Durante a pausa ficam atividades extras opcionais no app, e as aulas que caírem nas férias são repostas nos meses em que o seu dia de aula aparece 5 vezes.</p>
+  </header>
+
+  <div class="strip" aria-label="Datas da pausa">
+    <div><span class="eyebrow">Última semana de aulas</span><span class="big">7 a 12/12</span></div>
+    <div class="mid"><span class="eyebrow">Pausa</span><span class="big">14/12 a 10/01</span></div>
+    <div class="back"><span class="eyebrow">Volta às aulas</span><span class="big">11/01/2027</span></div>
+  </div>
+
+  <section>
+    <h2>A pausa</h2>
+    <div class="panel">
+      <div class="months two" id="pause-months"></div>
+      <p class="note" id="pause-note">Nas semanas listradas não tem aula ao vivo. No app ficam 2 ou 3 atividades por semana (vídeo curto, listening e um desafio de fala), todas opcionais.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="admin-only" style="display:grid;gap:10px">
+      <h2>Calendário 2027 por aluno</h2>
+      <div class="chips" id="chips" role="group" aria-label="Escolher aluno"></div>
+    </div>
+    <div class="panel" id="student-panel">
+      <div class="head-student">
+        <h2 id="st-name"></h2>
+        <span class="muted" id="st-when"></span>
+      </div>
+      <div class="stats">
+        <div><span class="n" id="st-lost"></span><span class="lbl muted">aulas na pausa</span></div>
+        <div class="repo-n"><span class="n" id="st-repo"></span><span class="lbl muted">reposições em 2027</span></div>
+        <div><span class="n" id="st-bal"></span><span class="lbl muted">saldo a favor</span></div>
+      </div>
+      <div class="dates">
+        <div>Última aula de 2026: <b id="st-last"></b> · Primeira aula de 2027: <b id="st-first"></b></div>
+        <div>Datas de reposição: <b id="st-repo-dates"></b></div>
+      </div>
+      <div class="legend">
+        <span><i class="sw class"></i>Aula normal</span>
+        <span><i class="sw repo"></i>Reposição (5ª semana do mês)</span>
+        <span><i class="sw pause"></i>Férias</span>
+        <span><i class="sw hol"></i>Feriado nacional (a combinar)</span>
+      </div>
+      <div class="months" id="year-months"></div>
+      <p class="note">As férias de fim de 2027 estão previstas a partir de 20/12/2027, por isso as 5ªs semanas de dezembro de 2027 não entram na conta. Reposições a mais ficam como saldo para cobrir faltas ao longo do ano.</p>
+    </div>
+  </section>
+
+  <section class="admin-only">
+    <h2>Mensagem pronta</h2>
+    <div class="panel">
+      <div class="msg" id="msg"></div>
+      <button class="copy" id="copy" type="button">Copiar mensagem</button>
+      <p class="note">Para mandar só o calendário deste aluno, compartilhe o link desta página com <code id="hash"></code> no final. Ele abre direto na versão do aluno, sem a lista dos outros.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const STUDENTS = [{"slug": "aluno", "name": "Verônica", "days": [5], "time": "17h"}];
+const HOLIDAYS = {
+  "2026-12-25": "Natal", "2027-01-01": "Ano Novo", "2027-02-08": "Carnaval", "2027-02-09": "Carnaval",
+  "2027-03-26": "Sexta-feira Santa", "2027-04-21": "Tiradentes", "2027-05-01": "Dia do Trabalho",
+  "2027-05-27": "Corpus Christi", "2027-09-07": "Independência", "2027-10-12": "N. Sra. Aparecida",
+  "2027-11-02": "Finados", "2027-11-15": "Proclamação da República", "2027-11-20": "Consciência Negra",
+  "2027-12-25": "Natal"
+};
+const PAUSE_START = new Date(2026, 11, 14), PAUSE_END = new Date(2027, 0, 10);
+const RETURN_DAY = new Date(2027, 0, 11), YEAR_END = new Date(2027, 11, 17), NEXT_BREAK = new Date(2027, 11, 20);
+const WD_SHORT = ["D", "S", "T", "Q", "Q", "S", "S"];
+const WD_PLURAL = ["domingos", "segundas", "terças", "quartas", "quintas", "sextas", "sábados"];
+const WD_NAME = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+
+const nth = d => Math.ceil(d.getDate() / 7);
+const between = (d, a, b) => d.getTime() >= a.getTime() && d.getTime() <= b.getTime();
+const key = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const fmt = d => String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0");
+const fmtLong = d => d.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" });
+const joinPt = arr => arr.length <= 1 ? arr.join("") : arr.slice(0, -1).join(", ") + " e " + arr[arr.length - 1];
+
+function classify(d, days) {
+  if (!days.includes(d.getDay())) return null;
+  if (between(d, PAUSE_START, PAUSE_END)) return nth(d) === 5 ? "pause5" : "pause";
+  if (d.getTime() >= NEXT_BREAK.getTime()) return "next";
+  return nth(d) === 5 ? "repo" : "class";
+}
+
+function summary(days) {
+  const lost = [], repo = [];
+  let lastBefore = null, firstAfter = null;
+  for (let d = new Date(2026, 11, 1); d <= new Date(2027, 11, 31); d.setDate(d.getDate() + 1)) {
+    const c = classify(d, days);
+    if (!c) continue;
+    const copy = new Date(d);
+    if (c === "pause") lost.push(copy);
+    if (c === "class" && d < PAUSE_START) lastBefore = copy;
+    if (c === "class" && d >= RETURN_DAY && !firstAfter) firstAfter = copy;
+    if (c === "repo" && d >= RETURN_DAY && d <= YEAR_END) repo.push(copy);
+  }
+  return { lost, repo, lastBefore, firstAfter };
+}
+
+function monthEl(year, month, dayClass) {
+  const wrap = document.createElement("div");
+  wrap.className = "month";
+  const title = new Date(year, month, 1).toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  wrap.innerHTML = "<h3>" + title + "</h3>";
+  const g = document.createElement("div");
+  g.className = "grid7";
+  WD_SHORT.forEach(w => { const s = document.createElement("div"); s.className = "wd"; s.textContent = w; g.appendChild(s); });
+  const first = new Date(year, month, 1).getDay();
+  for (let i = 0; i < first; i++) { const e = document.createElement("div"); e.className = "day empty"; g.appendChild(e); }
+  const last = new Date(year, month + 1, 0).getDate();
+  for (let n = 1; n <= last; n++) {
+    const d = new Date(year, month, n);
+    const c = document.createElement("div");
+    c.className = "day " + dayClass(d);
+    c.textContent = n;
+    const h = HOLIDAYS[key(d)];
+    if (h) { c.classList.add("hol"); c.title = h; }
+    g.appendChild(c);
+  }
+  wrap.appendChild(g);
+  return wrap;
+}
+
+function renderPause(days) {
+  const box = document.getElementById("pause-months");
+  box.innerHTML = "";
+  const cls = d => {
+    let out = "";
+    if (between(d, PAUSE_START, PAUSE_END)) out += "inpause ";
+    if (d.getTime() === RETURN_DAY.getTime()) out += "ret ";
+    if (days) {
+      const c = classify(d, days);
+      if (c === "pause") out += "lost ";
+      if (c === "class") out += "class ";
+      if (c === "repo") out += "repo ";
+    }
+    return out;
+  };
+  box.appendChild(monthEl(2026, 11, cls));
+  box.appendChild(monthEl(2027, 0, cls));
+}
+
+function renderYear(days) {
+  const box = document.getElementById("year-months");
+  box.innerHTML = "";
+  for (let m = 0; m < 12; m++) {
+    box.appendChild(monthEl(2027, m, d => {
+      let out = "";
+      if (between(d, PAUSE_START, PAUSE_END)) out += "inpause ";
+      if (d.getTime() >= NEXT_BREAK.getTime()) out += "offnext ";
+      const c = classify(d, days);
+      if (c === "class") out += "class ";
+      if (c === "repo" && d <= YEAR_END) out += "repo ";
+      if (c === "pause") out += "lost ";
+      return out;
+    }));
+  }
+}
+
+function message(st, s) {
+  const dias = joinPt(st.days.map(d => WD_PLURAL[d]));
+  return "Oi, " + st.name + "! 💙\n\n" +
+    "Passando pra avisar sobre as férias de fim de ano:\n\n" +
+    "• Última aula de 2026: " + fmtLong(s.lastBefore) + "\n" +
+    "• Pausa: de 14/12 a 10/01\n" +
+    "• Volta: " + fmtLong(s.firstAfter) + "\n\n" +
+    "Durante a pausa vou deixar atividades extras no app (opcionais) pra você manter o ritmo.\n\n" +
+    "As " + s.lost.length + " aulas que caem nas férias são repostas em 2027 nos meses que têm 5 " + dias + ". As suas reposições ficam em: " + joinPt(s.repo.map(fmt)) + ".\n\n" +
+    "Qualquer dúvida, me chama!";
+}
+
+let current = STUDENTS[0].slug;
+function select(slug) {
+  const st = STUDENTS.find(x => x.slug === slug) || STUDENTS[0];
+  current = st.slug;
+  const s = summary(st.days);
+  document.getElementById("st-name").textContent = st.name;
+  document.getElementById("st-when").textContent = joinPt(st.days.map(d => WD_NAME[d])) + " · " + st.time;
+  document.getElementById("st-lost").textContent = s.lost.length;
+  document.getElementById("st-repo").textContent = s.repo.length;
+  const bal = s.repo.length - s.lost.length;
+  document.getElementById("st-bal").textContent = (bal > 0 ? "+" : "") + bal;
+  document.getElementById("st-last").textContent = fmt(s.lastBefore);
+  document.getElementById("st-first").textContent = fmt(s.firstAfter);
+  document.getElementById("st-repo-dates").textContent = joinPt(s.repo.map(fmt));
+  document.getElementById("msg").textContent = message(st, s);
+  document.getElementById("hash").textContent = "#" + st.slug;
+  document.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.slug === st.slug)));
+  renderYear(st.days);
+  try { localStorage.setItem("vye-ferias-aluno", st.slug); } catch (e) {}
+  return st;
+}
+
+const chips = document.getElementById("chips");
+STUDENTS.forEach(st => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "chip"; b.id = "chip-" + st.slug; b.dataset.slug = st.slug; b.textContent = st.name;
+  b.addEventListener("click", () => select(st.slug));
+  chips.appendChild(b);
+});
+
+function route() {
+  const h = "aluno";
+  const st = STUDENTS.find(x => x.slug === h);
+  if (st) {
+    document.body.classList.add("student");
+    select(st.slug);
+    document.getElementById("title").textContent = "Suas férias e seu 2027, " + st.name.split(" ")[0];
+    document.getElementById("pause-note").textContent = "Os seus dias de aula que caem na pausa aparecem riscados. No app ficam 2 ou 3 atividades por semana (vídeo curto, listening e um desafio de fala), todas opcionais.";
+    renderPause(st.days);
+  } else {
+    document.body.classList.remove("student");
+    document.getElementById("title").textContent = "Férias e calendário 2027";
+    let saved = null;
+    try { saved = localStorage.getItem("vye-ferias-aluno"); } catch (e) {}
+    select(saved || current);
+    renderPause(null);
+  }
+}
+window.addEventListener("hashchange", route);
+route();
+
+document.getElementById("copy").addEventListener("click", e => {
+  const btn = e.currentTarget, text = document.getElementById("msg").textContent;
+  const done = () => { btn.textContent = "Copiada"; setTimeout(() => { btn.textContent = "Copiar mensagem"; }, 1600); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(document.getElementById("msg"));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    btn.textContent = "Texto selecionado, use Ctrl+C";
+  };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (err) { fallback(); }
+});
+</script>
+
+</body></html>

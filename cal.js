@@ -93,12 +93,8 @@
     var hols = R.holList.length ? '<div class="cal-hols"><b>Feriados ' + R.year + '</b><ul>' + R.holList.map(function (h) {
       return '<li' + (h.aula ? ' class="on"' : '') + '><span>' + br(h.s) + '</span> ' + esc(h.nome) + (h.tipo === "local" ? ' <small>(local)</small>' : '') + (h.aula ? ' <small>· cai no seu dia de aula, a combinar</small>' : '') + '</li>';
     }).join("") + '</ul></div>' : '';
-    var gurl = "";
-    if (opts.calToken && typeof location !== "undefined") {
-      var feed = new URL("cal/" + opts.calToken + ".ics", location.href).href.replace(/^https?:/, "webcal:");
-      gurl = "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent(feed);
-    }
-    var btn = '<div class="cal-act">' + (gurl ? '<a class="btn primary" href="' + esc(gurl) + '" target="_blank" rel="noopener">📅 Adicionar ao Google Agenda</a>' : '') + '<button class="btn' + (gurl ? ' ghost' : '') + '" type="button" data-calics="1" data-days="' + R.days.join(",") + '" data-time="' + esc(opts.time || "") + '" data-name="' + esc(opts.name || "") + '" data-local="' + esc(JSON.stringify(opts.local || {})) + '" data-semferiado="' + (opts.semFeriado ? 1 : "") + '">' + (gurl ? 'Outra agenda (iPhone)' : '📅 Adicionar à minha agenda') + '</button><small>Coloca todas as aulas, reposições, férias e feriados na sua agenda' + (gurl ? ' e atualiza sozinha se algo mudar' : '') + '.</small></div>';
+    var page = opts.calToken && typeof location !== "undefined" ? new URL("cal/" + opts.calToken + ".html", location.href).href : "";
+    var btn = page ? '<div class="cal-act"><a class="btn primary" href="' + esc(page) + '" target="_blank" rel="noopener">📅 Ver meu calendário</a><small>Abre o seu calendário de férias e reposições numa página só sua, que dá pra salvar nos favoritos.</small></div>' : '';
     return '<section class="cal"><details' + (opts.open ? " open" : "") + '><summary><b>Calendário ' + R.year + ' · férias e reposições</b><small>' + R.lost.length + ' aulas nas férias · ' + R.repos.length + ' reposições</small></summary>' + sum + kpis + btn + legend +
       '<div class="cal-ms">' + R.months.map(function (M) { return monthHTML(M, R.year); }).join("") + '</div>' + hols + '</details></section>';
   }
