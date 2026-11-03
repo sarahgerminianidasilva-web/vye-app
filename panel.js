@@ -98,10 +98,10 @@ function lessonsHTML(){
 
 function trilhaUrl(sem,n){var b=(D.links||{}).trilha;return b?b.replace(/#.*$/,"")+"#"+(sem==="s2"?"s2-":"")+"licao-"+n:""}
 function unitRow(u,i,list,sem){
- var tu=trilhaUrl(sem,i+1),stu=u.status||"todo";
- var t='<span class="ln">Lesson '+(i+1)+'</span> '+esc(u.title)+(u.url?' <a class="sl" href="'+esc(safeUrl(u.url))+'" target="_blank" rel="noopener">Slides ↗</a>':'')+(tu?' <a class="sl st2" href="'+esc(tu)+'" target="_blank" rel="noopener">'+(stu==="todo"?'Adiantar ↗':'Estudar ↗')+'</a>':'');
+ var isX=/^x\d+$/.test(u.id||""),no=unitNo(u,i),tu=isX?"":trilhaUrl(sem,no),stu=u.status||"todo";
+ var t='<span class="ln">'+(isX?'Extra':'Lesson '+no)+'</span> '+esc(u.title)+(u.url?' <a class="sl" href="'+esc(safeUrl(u.url))+'" target="_blank" rel="noopener">Slides ↗</a>':'')+(tu?' <a class="sl st2" href="'+esc(tu)+'" target="_blank" rel="noopener">'+(stu==="todo"?'Adiantar ↗':'Estudar ↗')+'</a>':'');
  var ctl=editing?'<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap"><select data-unit="'+esc(u.id)+'" data-ulist="'+list+'" aria-label="Status"><option value="todo"'+(stu==="todo"?" selected":"")+'>Ainda não</option><option value="now"'+(stu==="now"?" selected":"")+'>Estudando agora</option><option value="done"'+(stu==="done"?" selected":"")+'>Concluída</option></select>'+xBtn(list,u.id)+'</div>':'';
- return'<li class="unit '+esc(stu)+'"><span class="dot">'+(stu==="done"?"✓":(i+1))+'</span><div><div class="t">'+t+(stu==="now"?'<span class="tagnow">agora</span>':'')+'</div>'+(u.note?'<p>'+esc(u.note)+'</p>':'')+ctl+'</div></li>'}
+ return'<li class="unit '+esc(stu)+'"><span class="dot">'+(stu==="done"?"✓":(isX?"+":no))+'</span><div><div class="t">'+t+(stu==="now"?'<span class="tagnow">agora</span>':'')+'</div>'+(u.note?'<p>'+esc(u.note)+'</p>':'')+ctl+'</div></li>'}
 function pathHTML(){
  var U=D.units||[],U2=D.units2||[],nd=U.filter(function(u){return u.status==="done"}).length,nd2=U2.filter(function(u){return u.status==="done"}).length;
  var body=U.map(function(u,i){return unitRow(u,i,"units","s1")}).join("");
@@ -311,7 +311,7 @@ var progOpen=false,progTab="check",cdStep=0;
 var cdSt={};try{cdSt=JSON.parse(LS.getItem("cl-cando")||"{}")||{}}catch(e){cdSt={}}
 function cdSave(){try{LS.setItem("cl-cando",JSON.stringify(cdSt))}catch(e){}}
 var CDL=[{v:0,l:"Ainda não",e:"😕"},{v:1,l:"Mais ou menos",e:"🙂"},{v:2,l:"Consigo bem",e:"😄"}];
-function cdUnits(){var U=D.units||[],ids={};(D.cando||[]).forEach(function(c){ids[c.u]=1});return U.map(function(u,i){return{u:u,n:i+1}}).filter(function(x){return ids[x.u.id]&&x.u.status!=="todo"})}
+function cdUnits(){var U=D.units||[],ids={};(D.cando||[]).forEach(function(c){ids[c.u]=1});return U.map(function(u,i){return{u:u,n:unitNo(u,i)}}).filter(function(x){return ids[x.u.id]&&x.u.status!=="todo"})}
 function cdSummary(){var C=(D.cando||[]).filter(function(c){return cdUnits().some(function(x){return x.u.id===c.u})}),a=0,cnt=[0,0,0],k=0;
  C.forEach(function(c){var v=cdSt[c.id];if(v!==undefined){a+=v;cnt[v]++;k++}});return{n:C.length,k:k,pct:C.length?Math.round(a/(2*C.length)*100):0,cnt:cnt,C:C}}
 function checkHTML(){var L=cdUnits();if(!L.length)return'<div class="empty">A checklist aparece conforme as lições avançam.</div>';
@@ -488,7 +488,8 @@ function trlHeroHTML(){var t=trlStats(),cu=t.cu,base=((D.links||{}).trilha||"").
 function trlTotal(){return(D.units||[]).length+(D.units2||[]).length}
 function trlMiniHTML(){var t=trlStats(),cu=t.cu;if(!t.n)return"";
  return'<button type="button" class="trl-mini" data-gotrilha="1"><span class="di" aria-hidden="true">'+svg("path")+'</span><span class="t"><b>Sua trilha · '+t.done+' de '+t.n+' lições do '+esc(t.sem)+'</b><small>'+(cu?'Agora: Lesson '+cu.n+' · '+esc(cu.u.title):'Veja todas as lições do curso')+'</small><span class="bar"><i style="width:'+t.pct+'%"></i></span></span><span class="go" aria-hidden="true">›</span></button>'}
-function nowUnit(){var lists=[["units","s1"],["units2","s2"]];for(var k=0;k<lists.length;k++){var U=D[lists[k][0]]||[];for(var i=0;i<U.length;i++)if(U[i].status==="now")return{u:U[i],n:i+1,url3:trilhaUrl(lists[k][1],i+1)}}return null}
+function unitNo(u,i){var m=String((u&&u.id)||"").match(/^(?:s2)?u(\d+)$/);return m?+m[1]:i+1}
+function nowUnit(){var lists=[["units","s1"],["units2","s2"]];for(var k=0;k<lists.length;k++){var U=D[lists[k][0]]||[];for(var i=0;i<U.length;i++)if(U[i].status==="now")return{u:U[i],n:unitNo(U[i],i),url3:/^x\d+$/.test(U[i].id||"")?"":trilhaUrl(lists[k][1],unitNo(U[i],i))}}return null}
 function stepsLeft(){var l=lastLesson();if(!l)return 0;return(fcToday().length?1:0)+(hwIsDone(lessonHw(l))?0:1)}
 function todayHTML(){
  var l=lastLesson();
