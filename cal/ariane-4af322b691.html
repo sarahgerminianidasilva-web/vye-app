@@ -111,6 +111,7 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background:
 
 body.student .admin-only { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .chip { transition: background .15s, border-color .15s; } }
+@media print { .copy { display:none !important } .panel, .strip { break-inside: avoid } .month { break-inside: avoid } }
 </style>
 
 <div class="wrap">
@@ -118,6 +119,7 @@ body.student .admin-only { display: none !important; }
     <div class="eyebrow">Voice Your English · calendário 2027</div>
     <h1 id="title">Férias e calendário 2027</h1>
     <p class="muted" id="intro">As aulas param uma semana antes do Natal e voltam no dia 11 de janeiro. Durante a pausa ficam atividades extras opcionais no app, e as aulas que caírem nas férias são repostas nos meses em que o seu dia de aula aparece 5 vezes.</p>
+  <a class="copy" href="../" style="justify-self:start;text-decoration:none">📱 Abrir no app Voice Your English</a>
   </header>
 
   <div class="strip" aria-label="Datas da pausa">
